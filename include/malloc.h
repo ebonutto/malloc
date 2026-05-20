@@ -21,6 +21,11 @@ typedef struct s_zone {
 	struct s_zone *prev, *next;
 } s_zone;
 
+/* Global variables */
+static s_zone *g_zone_tiny = NULL;
+static s_zone *g_zone_small = NULL;
+static s_zone *g_zone_large = NULL;
+
 /* Prototypes */
 void *malloc(size_t size);
 
