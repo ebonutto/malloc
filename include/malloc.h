@@ -10,21 +10,22 @@
 
 /* Structures */
 typedef struct s_chunk {
-	int free;
 	size_t size;
-	struct s_chunk *prev, *next;
-} s_chunk;
+	struct s_chunk *next;
+	struct s_chunk *prev;
+	unsigned char free;
+} t_chunk;
 
 typedef struct s_zone {
-	size_t size;
-	s_chunk *chunks;
-	struct s_zone *prev, *next;
-} s_zone;
+	size_t total_size;
+	struct s_chunk *chunks;
+	struct s_zone *next;
+} t_zone;
 
 /* Global variables */
-static s_zone *g_zone_tiny = NULL;
-static s_zone *g_zone_small = NULL;
-static s_zone *g_zone_large = NULL;
+static t_zone *g_zone_tiny = NULL;
+static t_zone *g_zone_small = NULL;
+static t_zone *g_zone_large = NULL;
 
 /* Prototypes */
 void *malloc(size_t size);
