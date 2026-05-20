@@ -6,9 +6,9 @@
 #include <stdio.h> // perror()
 #include <unistd.h> // getpagesize()
 
-s_zone *create_tiny_zone(size_t size)
+t_zone *create_zone(size_t size)
 {
-	s_zone *zone;
+	t_zone *zone;
 
 	zone = mmap(NULL, size, PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
 	if (zone == MAP_FAILED)
@@ -19,14 +19,22 @@ s_zone *create_tiny_zone(size_t size)
 	return (zone);
 }
 
-void *allocate_tiny(size_t size)
+void *alloc_in_zone(t_zone **head, size_t size, size_t zone_size)
 {
-	s_zone *zone;
-	s_chunk *chunk;
+	t_zone *zone;
+	t_chunk *chunk;
 
-	zone = create_tiny_zone();
-
-	chunk = find_free_chunk()
+	zone = *head;
+	//while (zone) {
+	//	chunk = find_free_chunk();
+	//	if (chunk)
+	//		return ;
+	//	zone = zone->next;
+	//}
+	zone = create_zone(size, );
+	zone->next = *head;
+	*head = zone;
+	return ;
 }
 
 void *malloc(size_t size)
@@ -34,6 +42,6 @@ void *malloc(size_t size)
 	if (size <= TINY_MAX)
 		return allocate_tiny(size);
 	//if (size <= SMALL_MAX)
-	//	return allocate_small(size);
+		//return allocate_small(size);
 	//return allocate_large(size);
 }
