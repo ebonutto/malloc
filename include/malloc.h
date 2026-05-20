@@ -17,7 +17,7 @@ typedef struct s_chunk {
 
 typedef struct s_zone {
 	size_t size;
-	s_chunk *first;
+	s_chunk *chunks;
 	struct s_zone *prev, *next;
 } s_zone;
 
