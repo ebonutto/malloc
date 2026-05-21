@@ -6,42 +6,42 @@
 #include <stdio.h> // perror()
 #include <unistd.h> // getpagesize()
 
-t_zone *create_zone(size_t size)
+t_zone *g_zone_tiny = NULL;
+t_zone *g_zone_small = NULL;
+t_zone *g_zone_large = NULL;
+
+void *alloc_chunk(t_zone *head, size_t size)
 {
-	t_zone *zone;
+	t_chunk *chunk = (t_chunk *)((char *)head + sizeof(t_zone));
 
-	zone = mmap(NULL, size, PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
-	if (zone == MAP_FAILED)
-		return (perror("mmap()"), NULL);
+	chunk->size = size;
+	chunk->next = head->chunks;
+	chunk->free = 0;
 
-	zone->chunk = 
-
-	return (zone);
+	head->chunks = chunk;
+	return ((void *)((char *)chunk + sizeof(t_chunk)));
 }
 
-void *alloc_in_zone(t_zone **head, size_t size, size_t zone_size)
+void *alloc_in_zone(t_zone **head, size_t size)
 {
 	t_zone *zone;
-	t_chunk *chunk;
+	//t_chunk *chunk;
 
-	zone = *head;
+	//zone = *head;
 	//while (zone) {
-	//	chunk = find_free_chunk();
-	//	if (chunk)
-	//		return ;
+	//	chunk = find_free_space();
 	//	zone = zone->next;
 	//}
-	zone = create_zone(size, );
+	zone = create_zone(size);
+	if (!zone)
+		return (NULL);
 	zone->next = *head;
 	*head = zone;
-	return ;
+	return (alloc_chunk(*head, size));
 }
 
 void *malloc(size_t size)
 {
-	if (size <= TINY_MAX)
-		return allocate_tiny(size);
-	//if (size <= SMALL_MAX)
-		//return allocate_small(size);
-	//return allocate_large(size);
+	return (alloc_in_zone(&g_zone_tiny, size));
+	return (NULL);
 }
