@@ -4,37 +4,46 @@
 
 #include <stddef.h> // size_t, NULL
 #include <stdio.h> // perror()
-#include <unistd.h> // getpagesize()
 
 t_zone *g_zone_tiny = NULL;
 t_zone *g_zone_small = NULL;
 t_zone *g_zone_large = NULL;
 
-void *alloc_chunk(t_chunk *chunk, size_t size)
+static void *alloc_in_zone(t_zone **head, size_t size, size_t zone_size);
+
+void *malloc(size_t size)
 {
-	size_t old_size;
+	if (size == 0)
+		return (NULL);
+	size = (size + 15) & ~15;
+	if (size <= TINY_MAX)
+		return (alloc_in_zone(&g_zone_tiny, size, TINY_ZONE_SIZE));
+	return (NULL);
+}
+
+static void *alloc_in_chunk(t_chunk *chunk, size_t size)
+{
 	t_chunk *leftover;
+	size_t old_size;
 
 	old_size = chunk->size;
 	chunk->size = size;
-	chunk->free = 0;
+	chunk->flags &= ~CHUNK_FREE;
 
 	if (old_size - size >= sizeof(t_chunk) + 16) {
 		leftover = (t_chunk *)((char *)chunk + sizeof(t_chunk) + size);
 		leftover->size = old_size - size - sizeof(t_chunk);
-		leftover->free = 1;
+		leftover->flags = CHUNK_FREE;
 		leftover->prev = chunk;
 		leftover->next = chunk->next;
-
 		if (chunk->next)
 			chunk->next->prev = leftover;
 		chunk->next = leftover;
 	}
-
 	return ((char *)chunk + sizeof(t_chunk));
 }
 
-void *alloc_in_zone(t_zone **head, size_t size, size_t zone_size)
+static void *alloc_in_zone(t_zone **head, size_t size, size_t zone_size)
 {
 	t_zone *zone;
 	t_chunk *chunk;
@@ -43,8 +52,8 @@ void *alloc_in_zone(t_zone **head, size_t size, size_t zone_size)
 	while (zone) {
 		chunk = zone->chunks;
 		while (chunk) {
-			if (chunk->free && chunk->size >= size)
-				return (alloc_chunk(chunk, size));
+			if ((chunk->flags & CHUNK_FREE) && chunk->size >= size)
+				return (alloc_in_chunk(chunk, size));
 			chunk = chunk->next;
 		}
 		zone = zone->next;
@@ -56,17 +65,5 @@ void *alloc_in_zone(t_zone **head, size_t size, size_t zone_size)
 
 	zone->next = *head;
 	*head = zone;
-	return (alloc_chunk((*head)->chunks, size));
-}
-
-void *malloc(size_t size)
-{
-	if (size == 0)
-		return (NULL);
-
-	if (size <= TINY_MAX)
-		return (alloc_in_zone(&g_zone_tiny, size, TINY_ZONE_SIZE));
-	if (size <= SMALL_MAX)
-		return (alloc_in_zone(&g_zone_small, size, TINY_ZONE_SIZE));
-	return (NULL); // add big
+	return (alloc_in_chunk((*head)->chunks, size));
 }

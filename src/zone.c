@@ -10,10 +10,10 @@ t_zone *create_zone(size_t size)
 {
 	t_zone *zone;
 	t_chunk *chunk;
-	size_t page;
+	// size_t page;
 
-	page = getpagesize();
-	size = (size + page - 1) & ~(page - 1);
+	// page = getpagesize();
+	// size = (size + page - 1) & ~(page - 1);
 
 	zone = mmap(NULL, size, PROT_READ | PROT_WRITE,
 	            MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
@@ -25,7 +25,7 @@ t_zone *create_zone(size_t size)
 
 	chunk = (t_chunk *)((char *)zone + sizeof(t_zone));
 	chunk->size = zone->total_size - sizeof(t_zone) - sizeof(t_chunk);
-	chunk->free = 1;
+	chunk->flags |= CHUNK_FREE;
 	chunk->next = NULL;
 	chunk->prev = NULL;
 

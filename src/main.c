@@ -1,18 +1,20 @@
 #include "malloc.h"
-#include <sys/mman.h>
+
+#include <stdio.h> // printf()
 
 int main()
 {
 	void *ptr;
 
 	ptr = malloc(20);
-	(void)ptr;
-	ptr = malloc(40);
-	(void)ptr;
-	ptr = malloc(60);
-	(void)ptr;
-	show_alloc_mem_ex();
 
-	munmap(g_zone_tiny, TINY_ZONE_SIZE);
+	printf("Before\n");
+	show_alloc_mem();
+
+	free(ptr);
+
+	printf("After\n");
+	show_alloc_mem();
+
 	return (0);
 }
