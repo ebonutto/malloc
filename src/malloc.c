@@ -31,13 +31,12 @@ void *alloc_chunk(t_chunk *chunk, size_t size)
 		chunk->next = leftover;
 	}
 
-	// Retourner la data, pas le header
 	return ((char *)chunk + sizeof(t_chunk));
 }
 
 void *alloc_in_zone(t_zone **head, size_t size, size_t zone_size)
 {
-	t_zone  *zone;
+	t_zone *zone;
 	t_chunk *chunk;
 
 	zone = *head;
@@ -51,18 +50,23 @@ void *alloc_in_zone(t_zone **head, size_t size, size_t zone_size)
 		zone = zone->next;
 	}
 
-	// Rien trouvé → nouvelle zone
-	zone = create_zone(zone_size);  // ← zone_size pas size !
+	zone = create_zone(zone_size);
 	if (!zone)
-		return NULL;
-	zone->next = *head;
-	*head      = zone;
+		return (NULL);
 
-	return alloc_chunk((*head)->chunks, size);
+	zone->next = *head;
+	*head = zone;
+	return (alloc_chunk((*head)->chunks, size));
 }
 
 void *malloc(size_t size)
 {
-	return (alloc_in_zone(&g_zone_tiny, size, TINY_ZONE_SIZE));
-	return (NULL);
+	if (size == 0)
+		return (NULL);
+
+	if (size <= TINY_MAX)
+		return (alloc_in_zone(&g_zone_tiny, size, TINY_ZONE_SIZE));
+	if (size <= SMALL_MAX)
+		return (alloc_in_zone(&g_zone_small, size, TINY_ZONE_SIZE));
+	return (NULL); // add big
 }
