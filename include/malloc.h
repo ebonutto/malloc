@@ -33,6 +33,9 @@ extern t_zone *g_zone_large;
 /* malloc.c */
 void *malloc(size_t size);
 
+/* free.c */
+void free(void *ptr);
+
 /* zone.c */
 t_zone *create_zone(size_t size);
 
