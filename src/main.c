@@ -1,4 +1,5 @@
 #include "malloc.h"
+#include <sys/mman.h>
 
 int main()
 {
@@ -11,5 +12,7 @@ int main()
 	ptr = malloc(60);
 	(void)ptr;
 	show_alloc_mem_ex();
+
+	munmap(g_zone_tiny, TINY_ZONE_SIZE);
 	return (0);
 }
