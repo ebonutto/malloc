@@ -8,7 +8,7 @@ int main()
 	char *str;
 	int i = 0;
 
-	str = malloc(10);
+	str = malloc(12);
 	i = 0;
 	while (hello[i]) {
 		str[i] = hello[i];
@@ -20,6 +20,6 @@ int main()
 	show_alloc_mem_ex();
 
 	free(str);
-	show_alloc_mem();
+	show_alloc_mem_ex();
 	return (0);
 }
