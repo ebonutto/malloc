@@ -19,6 +19,21 @@ typedef struct s_zone {
 	struct s_zone *next;
 } t_zone;
 
+typedef struct s_log {
+	const char op;
+	void *ptr;
+	size_t size;
+	struct s_log *next;
+} t_log;
+
+typedef struct s_malloc_state {
+	t_zone *tiny;
+	t_zone *small;
+	t_zone *large;
+	t_log *log;
+	int flags;
+} t_malloc_state;
+
 /* Macros */
 #define ZONE_HEADER sizeof(t_zone)
 #define CHUNK_HEADER sizeof(t_chunk)
@@ -38,9 +53,7 @@ typedef struct s_zone {
 #define CHUNK_LARGE (1 << 3)
 
 /* Global variables */
-extern t_zone *g_tiny_zones;
-extern t_zone *g_small_zones;
-extern t_zone *g_large_zones;
+extern t_malloc_state g_malloc;
 
 /* Prototypes */
 /* malloc.c */
