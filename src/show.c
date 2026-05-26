@@ -28,7 +28,8 @@ static size_t show_chunks(t_chunk *chunk)
 		if (!(chunk->flags & CHUNK_FREE)) {
 			start = (void *)(chunk + 1);
 			end = (void *)((char *)start + chunk->size);
-			printf("%p - %p : %zu bytes\n", start, end, chunk->size);
+			printf("%p - %p : %zu bytes\n", start, end,
+			       chunk->size);
 			total += chunk->size;
 		}
 		chunk = chunk->next;
