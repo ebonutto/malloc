@@ -43,13 +43,19 @@ extern t_zone *g_small_zones;
 extern t_zone *g_large_zones;
 
 /* Prototypes */
-/* free.c */
-void free(void *ptr);
-
 /* malloc.c */
 void *malloc(size_t size);
 
-/* print.c */
+/* free.c */
+void free(void *ptr);
+
+/* realloc.c */
+void *realloc(void *ptr, size_t size);
+
+/* show.c */
 void show_alloc_mem(void);
+
+/* show_ex.c */
+void show_alloc_mem_ex(void);
 
 #endif
