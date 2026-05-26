@@ -8,13 +8,13 @@
 #define TINY_MAX 128
 #define SMALL_MAX 1024
 
-#define TINY_ZONE_SIZE TINY_MAX * 100
+#define TINY_SIZE ((TINY_MAX + sizeof(t_zone)) * 100)
+#define SMALL_SIZE ((SMALL_MAX + sizeof(t_zone)) * 100)
 
-#define CHUNK_FREE (1 << 0) // 0b001
-#define CHUNK_TINY (1 << 1) // 0b010
-#define CHUNK_SMALL (1 << 2) // 0b100
-#define CHUNK_LARGE (1 << 3) // 0b1000
-
+#define CHUNK_FREE (1 << 0)
+#define CHUNK_TINY (1 << 1)
+#define CHUNK_SMALL (1 << 2)
+#define CHUNK_LARGE (1 << 3)
 
 /* Structures */
 typedef struct s_chunk {
@@ -25,27 +25,24 @@ typedef struct s_chunk {
 } t_chunk;
 
 typedef struct s_zone {
-	size_t total_size;
+	size_t size;
 	t_chunk *chunks;
-	struct s_zone *next;
+	struct s_zone *prev, *next;
 } t_zone;
 
 /* Global variables */
-extern t_zone *g_zone_tiny;
-extern t_zone *g_zone_small;
-extern t_zone *g_zone_large;
+extern t_zone *g_tiny_zones;
+extern t_zone *g_small_zones;
+extern t_zone *g_large_zones;
 
 /* Prototypes */
-/* malloc.c */
-void *malloc(size_t size);
-
 /* free.c */
 void free(void *ptr);
 
+/* malloc.c */
+void *malloc(size_t size);
+
 /* print.c */
 void show_alloc_mem(void);
-
-/* zone.c */
-t_zone *create_zone(size_t size);
 
 #endif
