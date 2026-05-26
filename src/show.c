@@ -20,7 +20,7 @@ static size_t show_chunks(t_chunk *chunk)
 {
 	size_t total;
 	void *start;
-    	void *end;
+	void *end;
 
 	total = 0;
 	while (chunk) {
