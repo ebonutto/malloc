@@ -23,10 +23,10 @@ void *malloc(size_t size)
 
 	if (size <= TINY_MAX)
 		return (alloc_in_zone(&g_tiny_zones, size, TINY_SIZE,
-                                      CHUNK_TINY));
+		                      CHUNK_TINY));
 	if (size <= SMALL_MAX)
 		return (alloc_in_zone(&g_small_zones, size, SMALL_SIZE,
-                                      CHUNK_SMALL));
+		                      CHUNK_SMALL));
 	return (NULL);
 }
 
