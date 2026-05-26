@@ -15,13 +15,14 @@ void show_alloc_mem_ex(void)
 	total += show_zones(g_tiny_zones, "TINY");
 	total += show_zones(g_small_zones, "SMALL");
 	total += show_zones(g_large_zones, "LARGE");
-	printf("Total : %zu bytes\n", total);
+	printf("Total : %zu %s\n", total, total > 1 ? "bytes" : "byte");
 }
 
 static void show_data(void)
 {
-	printf("sizeof(t_zone) : %zu\n", sizeof(t_zone));
-	printf("sizeof(t_chunk) : %zu\n", sizeof(t_chunk));
+	printf("--- DATA ---\n");
+	printf("  sizeof(t_zone) : %zu bytes\n", sizeof(t_zone));
+	printf("  sizeof(t_chunk) : %zu bytes\n", sizeof(t_chunk));
 }
 
 static void hexdump(const void *ptr, size_t size)
@@ -33,7 +34,7 @@ static void hexdump(const void *ptr, size_t size)
 	p = ptr;
 	i = 0;
 	for (i = 0; i < size; i += 16) {
-		printf("%04zx  ", i);
+		printf("      %04zx  ", i);
 		for (j = 0; j < 16; j++) {
 			if (i + j < size)
 				printf("%02x ", p[i + j]);
@@ -44,7 +45,8 @@ static void hexdump(const void *ptr, size_t size)
 		}
 		printf(" ");
 		for (j = 0; j < 16 && i + j < 16 ; j++)
-			printf("%c", (p[i+j] >= 32 && p[i+j] < 127) ? p[i+j] : '.');
+			printf("%c",
+			       (p[i+j] >= 32 && p[i+j] < 127) ? p[i+j] : '.');
 		printf("\n");
 	}
 }
@@ -59,13 +61,12 @@ static size_t show_chunks(t_chunk *chunk)
 	while (chunk) {
 		start = (void *)(chunk + 1);
 		end = (void *)((char *)start + chunk->size);
-		printf("%p - %p : %zu bytes | free : %zu", start, end,
-			chunk->size, chunk->flags & CHUNK_FREE);
-		if (chunk->flags & CHUNK_FREE)
+		printf("    --- CHUNK : %p - %p : %zu bytes (free : %zu)\n",
+		       start, end, chunk->size, chunk->flags & CHUNK_FREE);
+		if (!(chunk->flags & CHUNK_FREE))
 			hexdump(start, chunk->size);
 		total += chunk->size;
 		chunk = chunk->next;
-		break ;
 	}
 	return (total);
 }
@@ -75,10 +76,12 @@ static size_t show_zones(t_zone *g_zone, const char *zone_name)
 	t_zone *zone;
 	size_t total;
 
-	printf("%s : %p\n", zone_name, (void *)g_zone);
+	printf("--- %s : %p ---\n", zone_name, (void *)g_zone);
 	total = 0;
 	zone = g_zone;
 	while (zone) {
+		printf("  --- ZONE : %p : %zu bytes ---\n",
+		       (void *)zone, zone->size);
 		total += show_chunks(zone->chunks);
 		zone = zone->next;
 	}
