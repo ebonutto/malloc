@@ -21,7 +21,7 @@ void *malloc(size_t size)
 	return (NULL);
 }
 
-static void *alloc_in_chunk(t_chunk *chunk, size_t size)
+static void *alloc_chunk(t_chunk *chunk, size_t size)
 {
 	t_chunk *leftover;
 	size_t old_size;
@@ -53,7 +53,7 @@ static void *alloc_in_zone(t_zone **head, size_t size, size_t zone_size)
 		chunk = zone->chunks;
 		while (chunk) {
 			if ((chunk->flags & CHUNK_FREE) && chunk->size >= size)
-				return (alloc_in_chunk(chunk, size));
+				return (alloc_chunk(chunk, size));
 			chunk = chunk->next;
 		}
 		zone = zone->next;
@@ -65,5 +65,5 @@ static void *alloc_in_zone(t_zone **head, size_t size, size_t zone_size)
 
 	zone->next = *head;
 	*head = zone;
-	return (alloc_in_chunk((*head)->chunks, size));
+	return (alloc_chunk((*head)->chunks, size));
 }
