@@ -10,9 +10,9 @@ void show_alloc_mem(void)
 	size_t total;
 
 	total = 0;
-	total += show_zones(g_tiny_zones, "TINY");
-	total += show_zones(g_small_zones, "SMALL");
-	total += show_zones(g_large_zones, "LARGE");
+	total += show_zones(g_malloc.tiny, "TINY");
+	total += show_zones(g_malloc.small, "SMALL");
+	total += show_zones(g_malloc.large, "LARGE");
 	printf("Total : %zu %s\n", total, total > 1 ? "bytes" : "byte");
 }
 

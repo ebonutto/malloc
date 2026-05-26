@@ -3,6 +3,7 @@
 #include <stddef.h> // size_t
 #include <stdio.h> // printf()
 
+static void show_alloc_history(void);
 static void show_data(void);
 static size_t show_zones(t_zone *g_zone, const char *zone_name);
 
@@ -11,10 +12,11 @@ void show_alloc_mem_ex(void)
 	size_t total;
 
 	show_data();
+	show_alloc_history();
 	total = 0;
-	total += show_zones(g_tiny_zones, "TINY");
-	total += show_zones(g_small_zones, "SMALL");
-	total += show_zones(g_large_zones, "LARGE");
+	total += show_zones(g_malloc.tiny, "TINY");
+	total += show_zones(g_malloc.small, "SMALL");
+	total += show_zones(g_malloc.large, "LARGE");
 	printf("Total : %zu %s\n", total, total > 1 ? "bytes" : "byte");
 }
 
@@ -23,6 +25,14 @@ static void show_data(void)
 	printf("--- DATA ---\n");
 	printf("  sizeof(t_zone) : %zu bytes\n", sizeof(t_zone));
 	printf("  sizeof(t_chunk) : %zu bytes\n", sizeof(t_chunk));
+}
+
+static void show_alloc_history(void)
+{
+	// t_log logs;
+	printf("--- ALLOC HISTORY ---\n");
+	
+
 }
 
 static void hexdump(const void *ptr, size_t size)
