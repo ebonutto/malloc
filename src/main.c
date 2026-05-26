@@ -4,19 +4,22 @@
 
 int main()
 {
-	void *ptr;
+	const char *hello = "Hello World!";
+	char *str;
+	int i = 0;
 
-	printf("t_zone size : %zu\n", sizeof(t_zone));
+	str = malloc(10);
+	i = 0;
+	while (hello[i]) {
+		str[i] = hello[i];
+		i++;
+	}
+	str[i] = '\0';
 
-	printf("tiny size : %zu\n", TINY_SIZE);
-	ptr = malloc(10);
-	printf("Before\n");
+
+	show_alloc_mem_ex();
+
+	free(str);
 	show_alloc_mem();
-	printf("Before\n");
-	free(ptr);
-
-	printf("After\n");
-	show_alloc_mem();
-
 	return (0);
 }
