@@ -2,8 +2,6 @@
 
 #include <sys/mman.h> // munmap()
 
-#include <stddef.h> // NULL
-
 static void coalesce(t_chunk *curr);
 static t_zone **get_zone_head(t_chunk *chunk);
 static void zone_unlink(t_zone **head, t_zone *zone);
@@ -11,7 +9,7 @@ static void zone_unlink(t_zone **head, t_zone *zone);
 void free(void *ptr)
 {
 	t_chunk *curr;
-	t_zone  *zone;
+	t_zone *zone;
 
 	if (!ptr)
 		return ;
