@@ -2,54 +2,68 @@
 
 #include <sys/mman.h> // munmap()
 
+#include <stddef.h> // NULL
+
+static void coalesce(t_chunk *curr);
+static t_zone **get_zone_head(t_chunk *chunk);
+static void zone_unlink(t_zone **head, t_zone *zone);
+
 void free(void *ptr)
 {
 	t_chunk *curr;
-	t_chunk *prev;
-	t_chunk *next;
+	t_zone  *zone;
 
 	if (!ptr)
 		return ;
-
-	curr = (t_chunk *)((char *)ptr - sizeof(t_chunk));
+	curr = (t_chunk *)((char *)ptr - CHUNK_HEADER);
 	if (curr->flags & CHUNK_FREE)
 		return ;
-
 	curr->flags |= CHUNK_FREE;
+	coalesce(curr);
+	if (!curr->prev && !curr->next) {
+		zone = (t_zone *)((char *)curr - ZONE_HEADER);
+		zone_unlink(get_zone_head(curr), zone);
+		munmap(zone, zone->size);
+	}
+}
+
+static void coalesce(t_chunk *curr)
+{
+	t_chunk *prev;
+	t_chunk *next;
 
 	prev = curr->prev;
 	next = curr->next;
 	if (prev && (prev->flags & CHUNK_FREE)) {
-		prev->size += curr->size + sizeof(t_chunk);
+		prev->size += curr->size + CHUNK_HEADER;
 		prev->next = next;
 		if (next)
 			next->prev = prev;
 		curr = prev;
 	}
 	if (next && (next->flags & CHUNK_FREE)) {
-		curr->size += next->size + sizeof(t_chunk);
-		next = next->next;
-		curr->next = next;
-		if (next)
-			next->prev = curr;
+		curr->size += next->size + CHUNK_HEADER;
+		curr->next = next->next;
+		if (next->next)
+			next->next->prev = curr;
 	}
+}
 
-	// t_zone *tiny_zone = g_zone_tiny;
-	// if (!tiny_zone)
-	// 	return ;
+static t_zone **get_zone_head(t_chunk *chunk)
+{
+	if (chunk->flags & CHUNK_TINY)
+		return (&g_tiny_zones);
+	if (chunk->flags & CHUNK_SMALL)
+		return (&g_small_zones);
+	return (&g_large_zones);
+}
 
-	// while (tiny_zone) {
-	// 	curr = tiny_zone->chunks;
-	// 	while (curr) {
-	// 		if (curr->free == 0) {
-				
-	// 			return ;
-	// 		}
-	// 		curr = curr->next;
-	// 	}
-	// 	tiny_zone = tiny_zone->next;
-	// }
-
-	munmap(g_zone_tiny, TINY_ZONE_SIZE);
-	g_zone_tiny = NULL;
+static void zone_unlink(t_zone **head, t_zone *zone)
+{
+	if (zone->prev)
+		zone->prev->next = zone->next;
+	else
+		*head = zone->next;
+	if (zone->next)
+		zone->next->prev = zone->prev;
 }
