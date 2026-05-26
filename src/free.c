@@ -50,10 +50,10 @@ static void coalesce(t_chunk *curr)
 static t_zone **get_zone_head(t_chunk *chunk)
 {
 	if (chunk->flags & CHUNK_TINY)
-		return (&g_tiny_zones);
+		return (&g_malloc.tiny);
 	if (chunk->flags & CHUNK_SMALL)
-		return (&g_small_zones);
-	return (&g_large_zones);
+		return (&g_malloc.small);
+	return (&g_malloc.large);
 }
 
 static void zone_unlink(t_zone **head, t_zone *zone)

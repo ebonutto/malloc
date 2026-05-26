@@ -6,9 +6,7 @@
 #include <stdio.h> // perror()
 #include <unistd.h> // getpagesize()
 
-t_zone *g_tiny_zones = NULL;
-t_zone *g_small_zones = NULL;
-t_zone *g_large_zones = NULL;
+t_malloc_state g_malloc = {NULL, NULL, NULL, NULL, 0};
 
 static void *alloc_in_zone(t_zone **head, size_t size, size_t zone_size,
                            size_t chunk_type);
@@ -19,10 +17,10 @@ void *malloc(size_t size)
 		return (NULL);
 	size = ALIGN16(size);
 	if (size <= TINY_MAX)
-		return (alloc_in_zone(&g_tiny_zones, size, TINY_SIZE,
+		return (alloc_in_zone(&g_malloc.tiny, size, TINY_SIZE,
 		                      CHUNK_TINY));
 	if (size <= SMALL_MAX)
-		return (alloc_in_zone(&g_small_zones, size, SMALL_SIZE,
+		return (alloc_in_zone(&g_malloc.small, size, SMALL_SIZE,
 		                      CHUNK_SMALL));
 	return (NULL);
 }
