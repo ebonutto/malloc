@@ -10,9 +10,10 @@ void show_alloc_mem(void)
 	size_t total;
 
 	total = 0;
-	total += show_zones(g_zone_tiny, "TINY");
-	total += show_zones(g_zone_small, "SMALL");
-	total += show_zones(g_zone_large, "LARGE");
+	total += show_zones(g_tiny_zones, "TINY");
+	total += show_zones(g_small_zones, "SMALL");
+	total += show_zones(g_large_zones, "LARGE");
+
 	printf("Total : %zu bytes\n", total);
 }
 
@@ -32,6 +33,7 @@ static size_t show_chunks(t_chunk *chunk)
 		}
 		chunk = chunk->next;
 	}
+
 	return (total);
 }
 
@@ -41,11 +43,13 @@ static size_t show_zones(t_zone *g_zone, const char *zone_name)
 	size_t total;
 
 	printf("%s : %p\n", zone_name, (void *)g_zone);
+
 	total = 0;
 	zone = g_zone;
 	while (zone) {
 		total += show_chunks(zone->chunks);
 		zone = zone->next;
 	}
+
 	return (total);
 }
