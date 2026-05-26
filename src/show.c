@@ -3,7 +3,7 @@
 #include <stddef.h> // size_t
 #include <stdio.h> // printf()
 
-static size_t show_zone(t_zone *g_zone, const char *zone_name);
+static size_t show_zones(t_zone *g_zone, const char *zone_name);
 
 void show_alloc_mem(void)
 {
@@ -41,7 +41,6 @@ static size_t show_zones(t_zone *g_zone, const char *zone_name)
 	size_t total;
 
 	printf("%s : %p\n", zone_name, (void *)g_zone);
-
 	total = 0;
 	zone = g_zone;
 	while (zone) {
