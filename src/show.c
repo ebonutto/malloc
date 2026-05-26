@@ -13,7 +13,7 @@ void show_alloc_mem(void)
 	total += show_zones(g_tiny_zones, "TINY");
 	total += show_zones(g_small_zones, "SMALL");
 	total += show_zones(g_large_zones, "LARGE");
-	printf("Total : %zu bytes\n", total);
+	printf("Total : %zu %s\n", total, total > 1 ? "bytes" : "byte");
 }
 
 static size_t show_chunks(t_chunk *chunk)
