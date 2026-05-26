@@ -70,11 +70,11 @@ static t_zone *create_zone(size_t zone_size, size_t chunk_type)
 	if (zone == MAP_FAILED)
 		return (perror("mmap()"), NULL);
 
-	zone->total_size = zone_size;
+	zone->size = zone_size;
 	zone->next = NULL;
 
 	chunk = (t_chunk *)((char *)zone + sizeof(t_zone));
-	chunk->size = zone->total_size - sizeof(t_zone) - sizeof(t_chunk);
+	chunk->size = zone->size - sizeof(t_zone) - sizeof(t_chunk);
 	chunk->flags = CHUNK_FREE | chunk_type;
 	chunk->next = NULL;
 	chunk->prev = NULL;
