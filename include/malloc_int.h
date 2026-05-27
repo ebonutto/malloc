@@ -62,7 +62,6 @@ t_chunk *find_free_chunk(t_zone *zone, size_t size);
 void *alloc_chunk(t_chunk *chunk, size_t size, size_t chunk_type);
 
 /* zone.c */
-size_t page_size(void);
 t_zone *create_zone(size_t zone_size, size_t chunk_type);
 void zone_prepend(t_zone **head, t_zone *zone);
 
