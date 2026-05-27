@@ -2,6 +2,8 @@
 
 #include <sys/mman.h> // munmap()
 
+#include <pthread.h> // pthread_mutex_lock(), pthread_mutex_unlock()
+
 static void coalesce(t_chunk *curr)
 {
 	t_chunk *prev;
@@ -43,7 +45,7 @@ static void zone_unlink(t_zone **head, t_zone *zone)
 		zone->next->prev = zone->prev;
 }
 
-void free(void *ptr)
+static void free_impl(void *ptr)
 {
 	t_chunk *curr;
 	t_zone *zone;
@@ -60,4 +62,11 @@ void free(void *ptr)
 		zone_unlink(get_zone_head(curr), zone);
 		munmap(zone, zone->size);
 	}
+}
+
+void free(void *ptr)
+{
+	pthread_mutex_lock(&g_malloc.lock);
+	free_impl(ptr);
+	pthread_mutex_unlock(&g_malloc.lock);
 }
