@@ -4,7 +4,7 @@
 
 #include <pthread.h> // pthread_mutex_lock(), pthread_mutex_unlock()
 
-static void coalesce(t_chunk *curr)
+static t_chunk *coalesce(t_chunk *curr)
 {
 	t_chunk *prev;
 	t_chunk *next;
@@ -24,6 +24,7 @@ static void coalesce(t_chunk *curr)
 		if (next->next)
 			next->next->prev = curr;
 	}
+	return (curr);
 }
 
 static t_zone **get_zone_head(t_chunk *chunk)
@@ -56,7 +57,7 @@ void free_impl(void *ptr)
 	if (curr->flags & CHUNK_FREE)
 		return ;
 	curr->flags |= CHUNK_FREE;
-	coalesce(curr);
+	curr = coalesce(curr);
 	if (!curr->prev && !curr->next) {
 		zone = (t_zone *)((char *)curr - ZONE_HEADER);
 		zone_unlink(get_zone_head(curr), zone);
