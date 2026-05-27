@@ -44,7 +44,7 @@ static void hexdump(const void *ptr, size_t size)
 				printf(" ");
 		}
 		printf(" ");
-		for (j = 0; j < 16 && i + j < 16 ; j++)
+		for (j = 0; j < 16 && i + j < size ; j++)
 			printf("%c",
 			       (p[i+j] >= 32 && p[i+j] < 127) ? p[i+j] : '.');
 		printf("\n");
