@@ -48,8 +48,8 @@ typedef struct s_malloc_state {
 #define TINY_MAX 128
 #define SMALL_MAX 1024
 
-#define TINY_SIZE (ZONE_HEADER + (TINY_MAX + CHUNK_HEADER) * 100)
-#define SMALL_SIZE (ZONE_HEADER + (SMALL_MAX + CHUNK_HEADER) * 100)
+#define TINY_SIZE (ZONE_HEADER + (CHUNK_HEADER + TINY_MAX) * 100)
+#define SMALL_SIZE (ZONE_HEADER + (CHUNK_HEADER + SMALL_MAX) * 100)
 
 #define CHUNK_FREE (1 << 0)
 #define CHUNK_TINY (1 << 1)
