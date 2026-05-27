@@ -73,6 +73,6 @@ void zone_prepend(t_zone **head, t_zone *zone);
 void *malloc_impl(size_t size);
 
 /* free.c */
-void free_impl(void *ptr)
+void free_impl(void *ptr);
 
 #endif
