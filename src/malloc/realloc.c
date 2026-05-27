@@ -13,6 +13,7 @@ static void *realloc_impl(void *ptr, size_t size)
 		return (malloc_impl(size));
 	if (size == 0)
 		return (free_impl(ptr), NULL);
+	ALIGN16(size);
 	chunk = (t_chunk *)((char *)ptr - CHUNK_HEADER);
 	if (chunk->size >= size)
 		return (ptr);
