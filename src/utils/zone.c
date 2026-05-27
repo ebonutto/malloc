@@ -6,7 +6,7 @@
 #include <stdio.h> // perror()
 #include <unistd.h> // getpagesize()
 
-size_t page_size(void)
+static size_t page_size(void)
 {
 	static size_t page = 0;
 
