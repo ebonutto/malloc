@@ -1,15 +1,34 @@
-#include "malloc.h"
 #include "malloc_int.h"
 
+#include <pthread.h> // PTHREAD_MUTEX_INITIALIZER, pthread_mutex_lock(), pthread_mutex_unlock()
 #include <stddef.h> // size_t, NULL
 
-t_malloc_state g_malloc = {NULL, NULL, NULL, NULL, 0};
+t_malloc_state g_malloc = {NULL, NULL, NULL, NULL, PTHREAD_MUTEX_INITIALIZER, 0};
+
+static void *alloc_in_new_zone(t_zone **head, size_t size, size_t zone_size,
+                               size_t chunk_type)
+{
+	t_zone *zone;
+
+	zone = create_zone(zone_size, chunk_type);
+	if (!zone)
+		return (NULL);
+	zone_prepend(head, zone);
+	return (alloc_chunk(zone->chunks, size, chunk_type));
+}
 
 static void *alloc_in_zone(t_zone **head, size_t size, size_t zone_size,
-                           size_t chunk_type);
-void *alloc_large(t_zone **head, size_t size);
+                           size_t chunk_type)
+{
+	t_chunk *chunk;
 
-void *malloc(size_t size)
+	chunk = find_free_chunk(*head, size);
+	if (chunk)
+		return (alloc_chunk(chunk, size, chunk_type));
+	return (alloc_in_new_zone(head, size, zone_size, chunk_type));
+}
+
+static void *malloc_impl(size_t size)
 {
 	if (size == 0)
 		return (NULL);
@@ -20,32 +39,17 @@ void *malloc(size_t size)
 	if (size <= SMALL_MAX)
 		return (alloc_in_zone(&g_malloc.small, size, SMALL_SIZE,
 		                      CHUNK_SMALL));
-	return (alloc_large(&g_malloc.large, size));
+	return (alloc_in_new_zone(&g_malloc.large, size,
+	                          ZONE_HEADER + CHUNK_HEADER + size,
+	                          CHUNK_LARGE));
 }
 
-static void *alloc_in_zone(t_zone **head, size_t size, size_t zone_size,
-                           size_t chunk_type)
+void *malloc(size_t size)
 {
-	t_zone *zone;
-	t_chunk *chunk;
+	void *ptr;
 
-	chunk = find_free_chunk(*head, size);
-	if (chunk)
-		return (alloc_chunk(chunk, size, chunk_type));
-	zone = create_zone(zone_size, chunk_type);
-	if (!zone)
-		return (NULL);
-	zone_prepend(head, zone);
-	return (alloc_chunk((*head)->chunks, size, chunk_type));
-}
-
-void *alloc_large(t_zone **head, size_t size)
-{
-	t_zone *zone;
-
-	zone = create_zone(size, CHUNK_LARGE);
-	if (!zone)
-		return (NULL);
-	zone_prepend(head, zone);
-	return (alloc_chunk((*head)->chunks, size, CHUNK_LARGE));
+	pthread_mutex_lock(&g_malloc.lock);
+	ptr = malloc_impl(size);
+	pthread_mutex_unlock(&g_malloc.lock);
+	return (ptr);
 }

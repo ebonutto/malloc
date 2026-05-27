@@ -2,6 +2,8 @@
 #define MALLOC_INT_H
 
 /* Includes */
+#include "malloc.h"
+
 #include <pthread.h> // pthread_mutex_t
 #include <stddef.h> // size_t
 

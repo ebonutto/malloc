@@ -1,5 +1,3 @@
-#include "malloc.h"
-
 #include "malloc_int.h"
 
 #include <sys/mman.h> // munmap()
