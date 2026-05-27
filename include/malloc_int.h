@@ -2,6 +2,7 @@
 #define MALLOC_INT_H
 
 /* Includes */
+#include <pthread.h> // pthread_mutex_t
 #include <stddef.h> // size_t
 
 /* Structures */
@@ -31,6 +32,7 @@ typedef struct s_malloc_state {
 	t_zone *small;
 	t_zone *large;
 	t_log *log;
+	pthread_mutex_t lock;
 	int flags;
 } t_malloc_state;
 
