@@ -1,5 +1,6 @@
 #include "malloc_int.h"
 
+#include <stddef.h> // NULL
 #include <stdint.h> // SIZE_MAX
 #include <strings.h> // bzero()
 
