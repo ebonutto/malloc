@@ -69,4 +69,10 @@ void *alloc_chunk(t_chunk *chunk, size_t size, size_t chunk_type);
 t_zone *create_zone(size_t zone_size, size_t chunk_type);
 void zone_prepend(t_zone **head, t_zone *zone);
 
+/* malloc.c */
+void *malloc_impl(size_t size);
+
+/* free.c */
+void free_impl(void *ptr)
+
 #endif

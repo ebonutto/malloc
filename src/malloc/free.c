@@ -45,7 +45,7 @@ static void zone_unlink(t_zone **head, t_zone *zone)
 		zone->next->prev = zone->prev;
 }
 
-static void free_impl(void *ptr)
+void free_impl(void *ptr)
 {
 	t_chunk *curr;
 	t_zone *zone;

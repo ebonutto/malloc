@@ -28,7 +28,7 @@ static void *alloc_in_zone(t_zone **head, size_t size, size_t zone_size,
 	return (alloc_in_new_zone(head, size, zone_size, chunk_type));
 }
 
-static void *malloc_impl(size_t size)
+void *malloc_impl(size_t size)
 {
 	if (size == 0)
 		return (NULL);
