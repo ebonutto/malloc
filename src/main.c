@@ -8,7 +8,7 @@ int main()
 	char *str;
 	int i = 0;
 
-	str = malloc(12);
+	str = malloc(1025);
 	i = 0;
 	while (hello[i]) {
 		str[i] = hello[i];

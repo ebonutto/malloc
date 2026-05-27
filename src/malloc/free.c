@@ -1,5 +1,7 @@
 #include "malloc.h"
 
+#include "malloc_int.h"
+
 #include <sys/mman.h> // munmap()
 
 static void coalesce(t_chunk *curr);

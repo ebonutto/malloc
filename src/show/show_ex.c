@@ -1,4 +1,5 @@
 #include "malloc.h"
+#include "malloc_int.h"
 
 #include <stddef.h> // size_t
 #include <stdio.h> // printf()
