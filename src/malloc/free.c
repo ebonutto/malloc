@@ -4,29 +4,6 @@
 
 #include <sys/mman.h> // munmap()
 
-static void coalesce(t_chunk *curr);
-static t_zone **get_zone_head(t_chunk *chunk);
-static void zone_unlink(t_zone **head, t_zone *zone);
-
-void free(void *ptr)
-{
-	t_chunk *curr;
-	t_zone *zone;
-
-	if (!ptr)
-		return ;
-	curr = (t_chunk *)((char *)ptr - CHUNK_HEADER);
-	if (curr->flags & CHUNK_FREE)
-		return ;
-	curr->flags |= CHUNK_FREE;
-	coalesce(curr);
-	if (!curr->prev && !curr->next) {
-		zone = (t_zone *)((char *)curr - ZONE_HEADER);
-		zone_unlink(get_zone_head(curr), zone);
-		munmap(zone, zone->size);
-	}
-}
-
 static void coalesce(t_chunk *curr)
 {
 	t_chunk *prev;
@@ -66,4 +43,23 @@ static void zone_unlink(t_zone **head, t_zone *zone)
 		*head = zone->next;
 	if (zone->next)
 		zone->next->prev = zone->prev;
+}
+
+void free(void *ptr)
+{
+	t_chunk *curr;
+	t_zone *zone;
+
+	if (!ptr)
+		return ;
+	curr = (t_chunk *)((char *)ptr - CHUNK_HEADER);
+	if (curr->flags & CHUNK_FREE)
+		return ;
+	curr->flags |= CHUNK_FREE;
+	coalesce(curr);
+	if (!curr->prev && !curr->next) {
+		zone = (t_zone *)((char *)curr - ZONE_HEADER);
+		zone_unlink(get_zone_head(curr), zone);
+		munmap(zone, zone->size);
+	}
 }
