@@ -1,24 +1,30 @@
+# Project
 NAME := malloc
 
-CC := cc
-CFLAGS := -Wall -Wextra -Werror
-
+# Directories
 SRC_DIR := src
 INC_DIR := include
 BUILD_DIR := .build
 
+# Compiler
+CC := cc
+CFLAGS := -Wall -Wextra -Werror
 CPPFLAGS := -I$(INC_DIR) -MMD -MP
+LDFLAGS := 
+LDLIBS := $(addprefix -l, m)
 
+# Sources
 SRCS := $(shell find $(SRC_DIR) -type f -name "*.c")
 OBJS := $(SRCS:$(SRC_DIR)/%.c=$(BUILD_DIR)/%.o)
 DEPS := $(OBJS:.o=.d)
 
+# Build rules
 .PHONY: all clean fclean re
 
 all: $(NAME)
 
 $(NAME): $(OBJS)
-	$(CC) $^ -o $@
+	$(CC) $^ -o $@ $(LDFLAGS) $(LDLIBS)
 
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
 	@mkdir -p $(@D)
