@@ -56,6 +56,10 @@ typedef struct s_malloc_state {
 #define CHUNK_SMALL (1 << 2)
 #define CHUNK_LARGE (1 << 3)
 
+#define MALLOC_LOG (1 << 0)
+#define MALLOC_ARENA_MAX (1 << 1)
+
+
 /* Global variables */
 extern t_malloc_state g_malloc;
 
