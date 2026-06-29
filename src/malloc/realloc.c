@@ -28,10 +28,11 @@ void *realloc(void *ptr, size_t size)
 {
 	void *new_ptr;
 
+	init_env();
 	pthread_mutex_lock(&g_malloc.lock);
 	new_ptr = realloc_impl(ptr, size);
 	if (g_malloc.flags & MALLOC_HISTORY)
-		history_push(LOG_MALLOC, ptr, new_ptr, size);
+		history_push(LOG_REALLOC, ptr, new_ptr, size);
 	pthread_mutex_unlock(&g_malloc.lock);
 	return (new_ptr);
 }

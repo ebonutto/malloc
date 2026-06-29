@@ -68,6 +68,7 @@ void free_impl(void *ptr)
 
 void free(void *ptr)
 {
+	init_env();
 	pthread_mutex_lock(&g_malloc.lock);
 	free_impl(ptr);
 	if (g_malloc.flags & MALLOC_HISTORY)
