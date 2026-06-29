@@ -26,8 +26,12 @@ static void *realloc_impl(void *ptr, size_t size)
 
 void *realloc(void *ptr, size_t size)
 {
+	void *new_ptr;
+
 	pthread_mutex_lock(&g_malloc.lock);
-	ptr = realloc_impl(ptr, size);
+	new_ptr = realloc_impl(ptr, size);
+	if (g_malloc.flags & MALLOC_HISTORY)
+		history_push(LOG_MALLOC, ptr, new_ptr, size);
 	pthread_mutex_unlock(&g_malloc.lock);
-	return (ptr);
+	return (new_ptr);
 }

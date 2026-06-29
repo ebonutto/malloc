@@ -52,7 +52,7 @@ void *malloc(size_t size)
 	pthread_mutex_lock(&g_malloc.lock);
 	ptr = malloc_impl(size);
 	if (g_malloc.flags & MALLOC_HISTORY)
-		history_push(LOG_MALLOC, ptr, size);
+		history_push(LOG_MALLOC, ptr, NULL, size);
 	pthread_mutex_unlock(&g_malloc.lock);
 	return (ptr);
 }

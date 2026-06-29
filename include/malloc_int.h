@@ -91,7 +91,7 @@ void zone_prepend(t_zone **head, t_zone *zone);
 int init_env(void);
 
 /* history.c */
-void history_push(t_log_op op, void *ptr, size_t size);
+void history_push(t_log_op op, void *ptr, void *new_ptr, size_t size);
 
 /* malloc.c */
 void *malloc_impl(size_t size);
