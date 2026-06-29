@@ -1,5 +1,6 @@
 #include "malloc_int.h"
 
+#include <pthread.h> // PTHREAD_MUTEX_INITIALIZER, pthread_mutex_lock(), pthread_mutex_unlock()
 #include <stdio.h> // printf()
 
 static void show_log(t_history *history, size_t total, size_t start)
@@ -26,7 +27,7 @@ static void show_log(t_history *history, size_t total, size_t start)
 	}
 }
 
-void show_history()
+void show_history_impl(void)
 {
 	t_history *history;
 	size_t count;
@@ -44,4 +45,11 @@ void show_history()
 	total = count < HISTORY_SIZE ? count : HISTORY_SIZE;
 	start = count < HISTORY_SIZE ? 0 : count & (HISTORY_SIZE - 1);
 	show_log(history, total, start);
+}
+
+void show_history(void)
+{
+	pthread_mutex_lock(&g_malloc.lock);
+	show_history_impl();
+	pthread_mutex_unlock(&g_malloc.lock);
 }
