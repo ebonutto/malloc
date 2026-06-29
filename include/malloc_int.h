@@ -19,7 +19,7 @@
 #define HISTORY_SIZE 16 //! Has to be a multiple of 2
 
 #define MALLOC_HISTORY (1 << 0)
-#define MALLOC_SCRIBBLE (1 << 1)
+#define MALLOC_HEXDUMP (1 << 1)
 
 /* Enums */
 typedef enum e_log_op {

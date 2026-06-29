@@ -13,8 +13,8 @@ void init_env(void)
 	value = getenv("MALLOC_HISTORY");
 	if (value)
 		g_malloc.flags |= MALLOC_HISTORY;
-	value = getenv("MALLOC_SCRIBBLE");
+	value = getenv("MALLOC_HEXDUMP");
 	if (value)
-		g_malloc.flags |= MALLOC_SCRIBBLE;
+		g_malloc.flags |= MALLOC_HEXDUMP;
 	initialized = 1;
 }

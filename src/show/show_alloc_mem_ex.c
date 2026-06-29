@@ -49,7 +49,7 @@ static size_t show_chunks(t_chunk *chunk)
 		end = (void *)((char *)start + chunk->size);
 		printf("    --- CHUNK : %p - %p : %zu bytes (free : %zu)\n",
 		       start, end, chunk->size, chunk->flags & CHUNK_FREE);
-		if (!(chunk->flags & CHUNK_FREE))
+		if (!(chunk->flags & CHUNK_FREE) && (g_malloc.flags & MALLOC_HEXDUMP))
 			hexdump(start, chunk->size);
 		total += chunk->size;
 		chunk = chunk->next;

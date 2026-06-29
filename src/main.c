@@ -52,7 +52,7 @@ void test_small(void)
 	p3 = malloc(512);
 	p4 = malloc(1024);
 
-	//show_alloc_mem_ex();
+	show_alloc_mem_ex();
 
 	free(p1);
 	free(p3);
@@ -65,5 +65,5 @@ void test_small(void)
 
 	free(p2);
 
-	show_alloc_mem_ex();
+	// show_alloc_mem_ex();
 }
