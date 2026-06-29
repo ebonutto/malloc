@@ -13,5 +13,6 @@ void free(void *ptr);
 
 void show_alloc_mem(void);
 void show_alloc_mem_ex(void);
+void show_history();
 
 #endif

@@ -3,7 +3,7 @@
 #include <pthread.h> // PTHREAD_MUTEX_INITIALIZER, pthread_mutex_lock(), pthread_mutex_unlock()
 #include <stddef.h> // size_t, NULL
 
-t_malloc_state g_malloc = {NULL, NULL, NULL, NULL, PTHREAD_MUTEX_INITIALIZER, 0};
+t_malloc_state g_malloc = {NULL, NULL, NULL, {0, {}}, PTHREAD_MUTEX_INITIALIZER, 0};
 
 static void *alloc_in_new_zone(t_zone **head, size_t size, size_t zone_size,
                                size_t chunk_type)
@@ -48,10 +48,11 @@ void *malloc(size_t size)
 {
 	void *ptr;
 
+	init_env();
 	pthread_mutex_lock(&g_malloc.lock);
 	ptr = malloc_impl(size);
-	// if (g_malloc.flags)
-	// 	add_log();
+	if (g_malloc.flags & MALLOC_HISTORY)
+		history_push(LOG_MALLOC, ptr, size);
 	pthread_mutex_unlock(&g_malloc.lock);
 	return (ptr);
 }

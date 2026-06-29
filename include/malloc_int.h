@@ -7,6 +7,17 @@
 #include <pthread.h> // pthread_mutex_t
 #include <stddef.h> // size_t
 
+/* Enums */
+typedef enum e_log_op {
+	LOG_MALLOC,
+	LOG_FREE,
+	LOG_REALLOC,
+	LOG_CALLOC
+} t_log_op;
+
+/* Macros */
+#define HISTORY_SIZE 16 //! Has to be a multiple of 2
+
 /* Structures */
 typedef struct s_chunk {
 	size_t size;
@@ -23,17 +34,22 @@ typedef struct s_zone {
 } t_zone;
 
 typedef struct s_log {
-	const char op;
+	t_log_op op;
 	void *ptr;
+	void *new_ptr;
 	size_t size;
-	struct s_log *next;
 } t_log;
+
+typedef struct s_history {
+	size_t count;
+	t_log logs[HISTORY_SIZE];
+} t_history;
 
 typedef struct s_malloc_state {
 	t_zone *tiny;
 	t_zone *small;
 	t_zone *large;
-	t_log *log;
+	t_history history;
 	pthread_mutex_t lock;
 	int flags;
 } t_malloc_state;
@@ -56,9 +72,8 @@ typedef struct s_malloc_state {
 #define CHUNK_SMALL (1 << 2)
 #define CHUNK_LARGE (1 << 3)
 
-#define MALLOC_LOG (1 << 0)
+#define MALLOC_HISTORY (1 << 0)
 #define MALLOC_ARENA_MAX (1 << 1)
-
 
 /* Global variables */
 extern t_malloc_state g_malloc;
@@ -72,6 +87,11 @@ void *alloc_chunk(t_chunk *chunk, size_t size, size_t chunk_type);
 /* zone.c */
 t_zone *create_zone(size_t zone_size, size_t chunk_type);
 void zone_prepend(t_zone **head, t_zone *zone);
+
+int init_env(void);
+
+/* history.c */
+void history_push(t_log_op op, void *ptr, size_t size);
 
 /* malloc.c */
 void *malloc_impl(size_t size);

@@ -69,5 +69,7 @@ void free(void *ptr)
 {
 	pthread_mutex_lock(&g_malloc.lock);
 	free_impl(ptr);
+	if (g_malloc.flags & MALLOC_HISTORY)
+		history_push(LOG_FREE, ptr, 0);
 	pthread_mutex_unlock(&g_malloc.lock);
 }

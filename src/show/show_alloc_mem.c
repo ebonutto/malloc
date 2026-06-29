@@ -1,20 +1,8 @@
 #include "malloc_int.h"
 
+#include <pthread.h> // PTHREAD_MUTEX_INITIALIZER, pthread_mutex_lock(), pthread_mutex_unlock()
 #include <stddef.h> // size_t
 #include <stdio.h> // printf()
-
-static size_t show_zones(t_zone *g_zone, const char *zone_name);
-
-void show_alloc_mem(void)
-{
-	size_t total;
-
-	total = 0;
-	total += show_zones(g_malloc.tiny, "TINY");
-	total += show_zones(g_malloc.small, "SMALL");
-	total += show_zones(g_malloc.large, "LARGE");
-	printf("Total : %zu %s\n", total, total > 1 ? "bytes" : "byte");
-}
 
 static size_t show_chunks(t_chunk *chunk)
 {
@@ -49,4 +37,22 @@ static size_t show_zones(t_zone *g_zone, const char *zone_name)
 		zone = zone->next;
 	}
 	return (total);
+}
+
+static void show_alloc_mem_impl(void)
+{
+	size_t total;
+
+	total = 0;
+	total += show_zones(g_malloc.tiny, "TINY");
+	total += show_zones(g_malloc.small, "SMALL");
+	total += show_zones(g_malloc.large, "LARGE");
+	printf("Total : %zu %s\n", total, total > 1 ? "bytes" : "byte");
+}
+
+void show_alloc_mem(void)
+{
+	pthread_mutex_lock(&g_malloc.lock);
+	show_alloc_mem_impl();
+	pthread_mutex_unlock(&g_malloc.lock);
 }

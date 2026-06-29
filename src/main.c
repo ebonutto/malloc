@@ -1,4 +1,5 @@
 #include "malloc.h"
+#include "malloc_int.h"
 
 #include <stdio.h> // printf()
 
@@ -28,15 +29,15 @@ void test_tiny(void)
 	free(p1);
 	free(p3);
 
-	show_alloc_mem_ex();
+	//show_alloc_mem_ex();
 
 	free(p4);
 
-	show_alloc_mem_ex();
+	//show_alloc_mem_ex();
 
 	free(p2);
 
-	show_alloc_mem_ex();
+	//show_alloc_mem_ex();
 }
 
 void test_small(void)
@@ -51,16 +52,16 @@ void test_small(void)
 	p3 = malloc(512);
 	p4 = malloc(1024);
 
-	show_alloc_mem_ex();
+	//show_alloc_mem_ex();
 
 	free(p1);
 	free(p3);
 
-	show_alloc_mem_ex();
+	//show_alloc_mem_ex();
 
 	free(p4);
 
-	show_alloc_mem_ex();
+	//show_alloc_mem_ex();
 
 	free(p2);
 
