@@ -27,7 +27,7 @@ static void show_log(t_history *history, size_t total, size_t start)
 	}
 }
 
-void show_history_impl(void)
+static void show_history_impl(void)
 {
 	t_history *history;
 	size_t count;
