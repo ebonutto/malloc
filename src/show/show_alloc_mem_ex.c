@@ -1,6 +1,6 @@
 #include "malloc_int.h"
 
-#include <pthread.h> // PTHREAD_MUTEX_INITIALIZER, pthread_mutex_lock(), pthread_mutex_unlock()
+#include <pthread.h> // pthread_mutex_lock(), pthread_mutex_unlock()
 #include <stddef.h> // size_t
 #include <stdio.h> // printf()
 
