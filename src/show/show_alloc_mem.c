@@ -47,7 +47,7 @@ static void show_alloc_mem_impl(void)
 	total += show_zones(g_malloc.tiny, "TINY");
 	total += show_zones(g_malloc.small, "SMALL");
 	total += show_zones(g_malloc.large, "LARGE");
-	printf("Total : %zu %s\n", total, total > 1 ? "bytes" : "byte");
+	printf("Total : %zu bytes\n", total);
 }
 
 void show_alloc_mem(void)

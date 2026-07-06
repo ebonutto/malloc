@@ -85,7 +85,7 @@ static void show_alloc_mem_ex_impl(void)
 	total += show_zones(g_malloc.large, "LARGE");
 	if (g_malloc.flags & MALLOC_HISTORY)
 		show_history();
-	printf("Total : %zu %s\n", total, total > 1 ? "bytes" : "byte");
+	printf("Total : %zu bytes\n", total);
 }
 
 void show_alloc_mem_ex(void)

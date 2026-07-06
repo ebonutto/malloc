@@ -38,7 +38,7 @@ void *alloc_chunk(t_chunk *chunk, size_t size, size_t chunk_type)
 	old_size = chunk->size;
 	chunk->size = size;
 	chunk->flags &= ~CHUNK_FREE;
-	if (old_size - size >= CHUNK_HEADER + 16) {
+	if (old_size - size >= CHUNK_HEADER) {
 		leftover = (t_chunk *)((char *)chunk + CHUNK_HEADER + size);
 		leftover->size = old_size - size - CHUNK_HEADER;
 		leftover->flags = CHUNK_FREE | chunk_type;
