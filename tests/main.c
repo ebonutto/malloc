@@ -1,8 +1,8 @@
+#include "malloc.h"
+
 #include <stddef.h> // NULL
 #include <stdio.h> // printf()
 #include <string.h> // memset()
-
-#include "malloc.h"
 
 #define GREEN "\033[0;32m"
 #define RED "\033[0;31m"
@@ -193,59 +193,56 @@ error:
 	show_alloc_mem();
 }
 
-/////* ─────────────────────────────────────────────
-////** 6. REALLOC
-////** ───────────────────────────────────────────── */
-////static void test_realloc(void)
-////{
-////	char *ptr;
-////	char *new_ptr;
+//static void test_realloc(void)
+//{
+//	char *ptr;
+//	char *new_ptr;
 
-////	TEST_HEAD("REALLOC");
+//	TEST_HEAD("REALLOC");
 
-////	ptr = malloc(16);
-////	if (!ptr)
-////	{
-////		TEST_FAIL("realloc initial malloc");
-////		return ;
-////	}
-////	memcpy(ptr, "Hello, World!!!", 16);
+//	ptr = malloc(16);
+//	if (!ptr)
+//	{
+//		TEST_FAIL("realloc initial malloc");
+//		return ;
+//	}
+//	memcpy(ptr, "Hello, World!!!", 16);
 
-////	/* Agrandir */
-////	new_ptr = realloc(ptr, 128);
-////	if (!new_ptr)
-////	{
-////		TEST_FAIL("realloc grow");
-////		free(ptr);
-////		return ;
-////	}
-////	memcmp(new_ptr, "Hello, World!!!", 16) == 0
-////		? TEST_PASS("realloc grow data preserved")
-////		: TEST_FAIL("realloc grow data preserved");
-////	ptr = new_ptr;
+//	/* Agrandir */
+//	new_ptr = realloc(ptr, 128);
+//	if (!new_ptr)
+//	{
+//		TEST_FAIL("realloc grow");
+//		free(ptr);
+//		return ;
+//	}
+//	memcmp(new_ptr, "Hello, World!!!", 16) == 0
+//		? TEST_PASS("realloc grow data preserved")
+//		: TEST_FAIL("realloc grow data preserved");
+//	ptr = new_ptr;
 
-////	/* Réduire */
-////	new_ptr = realloc(ptr, 8);
-////	new_ptr != NULL
-////		? TEST_PASS("realloc shrink")
-////		: TEST_FAIL("realloc shrink");
-////	ptr = new_ptr;
+//	/* Réduire */
+//	new_ptr = realloc(ptr, 8);
+//	new_ptr != NULL
+//		? TEST_PASS("realloc shrink")
+//		: TEST_FAIL("realloc shrink");
+//	ptr = new_ptr;
 
-////	/* realloc(NULL) == malloc */
-////	new_ptr = realloc(NULL, 64);
-////	new_ptr != NULL
-////		? TEST_PASS("realloc(NULL) == malloc")
-////		: TEST_FAIL("realloc(NULL) == malloc");
-////	free(new_ptr);
+//	/* realloc(NULL) == malloc */
+//	new_ptr = realloc(NULL, 64);
+//	new_ptr != NULL
+//		? TEST_PASS("realloc(NULL) == malloc")
+//		: TEST_FAIL("realloc(NULL) == malloc");
+//	free(new_ptr);
 
-////	/* realloc(ptr, 0) == free */
-////	new_ptr = realloc(ptr, 0);
-////	new_ptr == NULL
-////		? TEST_PASS("realloc(ptr, 0) == free")
-////		: TEST_FAIL("realloc(ptr, 0) == free");
+//	/* realloc(ptr, 0) == free */
+//	new_ptr = realloc(ptr, 0);
+//	new_ptr == NULL
+//		? TEST_PASS("realloc(ptr, 0) == free")
+//		: TEST_FAIL("realloc(ptr, 0) == free");
 
-////	show_alloc_mem();
-////}
+//	show_alloc_mem();
+//}
 
 ///* Useful to test history and hexdump */
 //static void test_show(void)
