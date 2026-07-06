@@ -1,7 +1,6 @@
 #include <stddef.h> // NULL
 #include <stdio.h> // printf()
 #include <string.h> // memset()
-#include <time.h> // time()
 
 #include "malloc.h"
 
@@ -14,8 +13,8 @@
 #define TINY_MAX 128
 #define SMALL_MAX 1024
 
-#define TEST_TITLE(name) printf(YELLOW  "--- %s ---\n" RESET, name)
-#define TEST_HEAD(name) printf(BLUE  "--- %s ---\n" RESET, name)
+#define TEST_TITLE(name) printf(YELLOW  "\n--- %s ---\n" RESET, name)
+#define TEST_HEAD(name) printf(BLUE  "\n--- %s ---\n" RESET, name)
 #define TEST_PASS(name) printf(GREEN "[PASS]" RESET " %s\n", name)
 #define TEST_FAIL(name) printf(RED   "[FAIL]" RESET " %s\n", name)
 

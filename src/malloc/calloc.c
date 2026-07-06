@@ -26,7 +26,7 @@ void *calloc(size_t count, size_t size)
 	pthread_mutex_lock(&g_malloc.lock);
 	ptr = calloc_impl(count, size);
 	if (g_malloc.flags & MALLOC_HISTORY)
-		history_push(LOG_CALLOC, ptr, NULL, size);
+		history_push(LOG_CALLOC, ptr, NULL, count * size); //! count * size can overflow
 	pthread_mutex_unlock(&g_malloc.lock);
 	return (ptr);
 }
