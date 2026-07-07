@@ -18,6 +18,37 @@
 #define TEST_PASS(name) printf(GREEN "[PASS]" RESET " %s\n", name)
 #define TEST_FAIL(name) printf(RED   "[FAIL]" RESET " %s\n", name)
 
+///* Useful to test history and hexdump */
+//static void test_show(void)
+//{
+//	void *a;
+//	void *b;
+
+//	TEST_HEAD("Start Test Show");
+
+//	/* malloc + memset */
+//	a = malloc(32);
+//	b = malloc(512);
+//	memset(a, 'A', 32);
+//	memset(b, 'B', 512);
+
+//	show_alloc_mem();
+//	TEST_PASS("show_alloc_mem()");
+//	show_alloc_mem_ex();
+//	TEST_PASS("show_alloc_mem_ex()");
+
+//	/* free */
+//	free(a);
+//	free(b);
+
+//	show_alloc_mem();
+//	TEST_PASS("show_alloc_mem()");
+//	show_alloc_mem_ex();
+//	TEST_PASS("show_alloc_mem_ex()");
+
+//	TEST_HEAD("End Test Show");
+//}
+
 //static void test_zero(void)
 //{
 //	void *ptr;
@@ -141,57 +172,75 @@
 //	show_alloc_mem();
 //}
 
-static void test_fragmentation(void)
-{
-	void *a;
-	void *b;
-	void *c;
-	void *d;
+//static void test_fragmentation(void)
+//{
+//	void *a;
+//	void *b;
+//	void *c;
+//	void *d;
 
-	TEST_HEAD("Test Fragmentation");
+//	TEST_HEAD("Test Fragmentation");
 
-	a = malloc(64);
-	b = malloc(64);
-	c = malloc(64);
-	d = malloc(64);
-	if (!a || !b || !c || !d) {
-		TEST_FAIL("malloc() failed");
-		goto error;
-	}
-	show_alloc_mem_ex();
+//	/* Initial setup */
+//	a = malloc(32);
+//	b = malloc(32);
+//	c = malloc(32);
+//	d = malloc(32);
+//	if (!a || !b || !c || !d) {
+//		TEST_FAIL("malloc() failed");
+//		goto cleanup;
+//	}
+//	show_alloc_mem_ex();
 
-	/* Free middle */
-	free(b);
-	free(c);
-	show_alloc_mem_ex();
+//	/* Free middle */
+//	free(b);
+//	free(c);
+//	show_alloc_mem_ex();
 
-	/* Re-using same space */
-	b = malloc(128);
-	c = malloc(64);
-	if (!b || !c) {
-		TEST_FAIL("malloc() failed");
-		goto error;
-	}
-	show_alloc_mem_ex();
+//	/* Fat chunk in the middle */
+//	b = malloc(72);
+//	c = malloc(32);
+//	if (!b || !c) {
+//		TEST_FAIL("malloc() failed");
+//		goto cleanup;
+//	}
+//	show_alloc_mem_ex();
 
-	free(b);
-	free(c);
-	show_alloc_mem_ex();
+//	/* Free middle */
+//	free(b);
+//	free(c);
+//	show_alloc_mem_ex();
 
-	free(d);
-	show_alloc_mem_ex();
+//	/* Chunk with 0 data in the middle */
+//	b = malloc(56);
+//	c = malloc(32);
+//	if (!b || !c) {
+//		TEST_FAIL("malloc() failed");
+//		goto cleanup;
+//	}
+//	show_alloc_mem_ex();
 
-	free(a);
+//	/* Free middle */
+//	free(b);
+//	free(c);
+//	show_alloc_mem_ex();
 
-	show_alloc_mem();
-	return ;
-error:
-	free(a);
-	free(b);
-	free(c);
-	free(d);
-	show_alloc_mem();
-}
+//	/* Go back to initial setup */
+//	b = malloc(32);
+//	c = malloc(32);
+//	if (!b || !c) {
+//		TEST_FAIL("malloc() failed");
+//		goto cleanup;
+//	}
+//	show_alloc_mem_ex();
+
+//cleanup:
+//	free(a);
+//	free(b);
+//	free(c);
+//	free(d);
+//	show_alloc_mem();
+//}
 
 //static void test_realloc(void)
 //{
@@ -244,49 +293,18 @@ error:
 //	show_alloc_mem();
 //}
 
-///* Useful to test history and hexdump */
-//static void test_show(void)
-//{
-//	void *a;
-//	void *b;
-
-//	TEST_HEAD("Start Test Show");
-
-//	/* malloc + memset */
-//	a = malloc(32);
-//	b = malloc(512);
-//	memset(a, 'A', 32);
-//	memset(b, 'B', 512);
-
-//	show_alloc_mem();
-//	TEST_PASS("show_alloc_mem()");
-//	show_alloc_mem_ex();
-//	TEST_PASS("show_alloc_mem_ex()");
-
-//	/* free */
-//	free(a);
-//	free(b);
-
-//	show_alloc_mem();
-//	TEST_PASS("show_alloc_mem()");
-//	show_alloc_mem_ex();
-//	TEST_PASS("show_alloc_mem_ex()");
-
-//	TEST_HEAD("End Test Show");
-//}
-
 int main(void)
 {
 	TEST_TITLE("Start Test malloc");
 
+	//test_show();
 	//test_zero();
 	//test_basic();
 	//test_tiny();
 	//test_small();
 	//test_large();
 	//test_stress();
-	test_fragmentation();
-	//test_show();
+	//test_fragmentation();
 
 	TEST_TITLE("End Test malloc");
 	return (0);
