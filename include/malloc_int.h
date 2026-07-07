@@ -8,8 +8,8 @@
 #include <stddef.h> // size_t
 
 /* Defines */
-#define TINY_MAX 128
-#define SMALL_MAX 1024
+#define TINY_MAX 128 //TODO Update if 32 or 64 bits
+#define SMALL_MAX 1024 //TODO Update if 32 or 64 bits
 
 #define CHUNK_FREE (1 << 0)
 #define CHUNK_TINY (1 << 1)
