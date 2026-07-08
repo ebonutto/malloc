@@ -57,11 +57,11 @@ typedef struct s_history {
 } t_history;
 
 typedef struct s_malloc_state {
+	pthread_mutex_t lock;
 	t_zone *tiny;
 	t_zone *small;
 	t_zone *large;
 	t_history history;
-	pthread_mutex_t lock;
 	int flags;
 } t_malloc_state;
 
