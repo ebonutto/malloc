@@ -27,7 +27,7 @@ static void show_log(t_history *history, size_t total, size_t start)
 	}
 }
 
-static void show_history_impl(void)
+void show_history(void)
 {
 	t_history *history;
 	size_t count;
@@ -45,11 +45,4 @@ static void show_history_impl(void)
 	total = count < HISTORY_SIZE ? count : HISTORY_SIZE;
 	start = count < HISTORY_SIZE ? 0 : count & (HISTORY_SIZE - 1);
 	show_log(history, total, start);
-}
-
-void show_history(void)
-{
-	pthread_mutex_lock(&g_malloc.lock);
-	show_history_impl();
-	pthread_mutex_unlock(&g_malloc.lock);
 }
