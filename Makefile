@@ -1,53 +1,88 @@
+################################################################################
 # Project
-HOSTTYPE ?= $(shell uname -m)_$(shell uname -s | tr '[:upper:]' '[:lower:]')
-NAME := libft_malloc_$(HOSTTYPE).so
-NAME_LINK := libft_malloc.so
-TEST_BIN := malloc
+################################################################################
 
+MAKEFLAGS += --no-print-directory
+
+HOSTTYPE := $(shell uname -m)_$(shell uname -s | tr '[:upper:]' '[:lower:]')
+
+NAME      := libft_malloc_$(HOSTTYPE).so
+LINK_NAME := libft_malloc.so
+TEST      := malloc
+
+################################################################################
 # Directories
-SRC_DIR := src
-INC_DIR := include
+################################################################################
+
+SRC_DIR   := src
+INC_DIR   := include
 BUILD_DIR := .build
-TEST_DIR := tests
+TEST_DIR  := tests
 
+################################################################################
 # Compiler
-CC := cc
-CFLAGS := -Wall -Werror -Wextra -fPIC
-CPPFLAGS := -I$(INC_DIR) -MMD -MP
-LDFLAGS := 
-LDLIBS := -lpthread
+################################################################################
 
+CC := cc
+RM := rm -rf
+
+CFLAGS   := -Wall -Wextra -Werror
+CPPFLAGS := -I$(INC_DIR) -MMD -MP
+LDFLAGS  :=
+LDLIBS   := -lpthread
+
+CFLAGS += -fPIC
+
+ifdef DEBUG
+	CFLAGS += -g3
+endif
+
+ifdef SAN
+	CFLAGS  += -fsanitize=address
+	LDFLAGS += -fsanitize=address
+endif
+
+################################################################################
 # Sources
-SRCS := $(shell find $(SRC_DIR) -type f -name "*.c" ! -name "main.c")
-OBJS := $(SRCS:$(SRC_DIR)/%.c=$(BUILD_DIR)/%.o)
+################################################################################
+
+SRCS := $(shell find $(SRC_DIR) -type f -name "*.c")
+OBJS := $(patsubst $(SRC_DIR)/%.c,$(BUILD_DIR)/%.o,$(SRCS))
 DEPS := $(OBJS:.o=.d)
 
-# Build rules
-.PHONY: all test clean fclean re
+################################################################################
+# Rules
+################################################################################
 
-all: $(NAME_LINK)
+.PHONY: all clean fclean re test run
+
+all: $(LINK_NAME)
 
 $(NAME): $(OBJS)
-	$(CC) -shared $^ -o $@ $(LDFLAGS) $(LDLIBS)
+	$(CC) -shared $(LDFLAGS) $^ -o $@ $(LDLIBS)
 
-$(NAME_LINK): $(NAME)
-	@ln -sf $(NAME) $(NAME_LINK)
+$(LINK_NAME): $(NAME)
+	ln -sf $< $@
 
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
 	@mkdir -p $(@D)
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
 
-$(TEST_BIN): $(NAME_LINK)
-	$(CC) $(CFLAGS) $(CPPFLAGS) $(TEST_DIR)/main.c -L. -lft_malloc -o $@
+$(TEST): $(NAME)
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(TEST_DIR)/main.c -o $@ $(LDFLAGS)
 
-test: $(TEST_BIN)
-	LD_PRELOAD=./$(NAME_LINK) ./$(TEST_BIN)
+run: $(TEST)
+	LD_PRELOAD=./$(LINK_NAME) ./$(TEST)
+
+test: run
 
 clean:
-	rm -rf $(BUILD_DIR)
+	$(RM) $(BUILD_DIR)
 
 fclean: clean
-	rm -f $(NAME) $(NAME_LINK) $(TEST_BIN)
+	$(RM) $(NAME)
+	$(RM) $(LINK_NAME)
+	$(RM) $(TEST)
 
 re: fclean all
 
