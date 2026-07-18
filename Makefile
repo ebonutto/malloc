@@ -1,65 +1,32 @@
-################################################################################
-# Project
-################################################################################
+ifeq ($(HOSTTYPE),)
+	HOSTTYPE := $(shell uname -m)_$(shell uname -s)
+endif
 
-MAKEFLAGS += --no-print-directory
-
-HOSTTYPE := $(shell uname -m)_$(shell uname -s | tr '[:upper:]' '[:lower:]')
-
-NAME      := libft_malloc_$(HOSTTYPE).so
+NAME := libft_malloc_$(HOSTTYPE).so
 LINK_NAME := libft_malloc.so
-TEST      := malloc
+EXEC := malloc
 
-################################################################################
-# Directories
-################################################################################
-
-SRC_DIR   := src
-INC_DIR   := include
+SRC_DIR := src
+INC_DIR := include
+TEST_DIR := tests
 BUILD_DIR := .build
-TEST_DIR  := tests
-
-################################################################################
-# Compiler
-################################################################################
 
 CC := cc
-RM := rm -rf
-
-CFLAGS   := -Wall -Wextra -Werror
+CFLAGS := -Wall -Wextra -Werror -fPIC
 CPPFLAGS := -I$(INC_DIR) -MMD -MP
-LDFLAGS  :=
-LDLIBS   := -lpthread
+LDFLAGS := -shared
+LDLIBS := -lpthread
 
-CFLAGS += -fPIC
-
-ifdef DEBUG
-	CFLAGS += -g3
-endif
-
-ifdef SAN
-	CFLAGS  += -fsanitize=address
-	LDFLAGS += -fsanitize=address
-endif
-
-################################################################################
-# Sources
-################################################################################
-
-SRCS := $(shell find $(SRC_DIR) -type f -name "*.c")
-OBJS := $(patsubst $(SRC_DIR)/%.c,$(BUILD_DIR)/%.o,$(SRCS))
+SRCS := $(shell find $(SRC_DIR) -name "*.c")
+OBJS := $(SRCS:$(SRC_DIR)/%.c=$(BUILD_DIR)/%.o)
 DEPS := $(OBJS:.o=.d)
 
-################################################################################
-# Rules
-################################################################################
-
-.PHONY: all clean fclean re test run
+.PHONY: all clean fclean re run
 
 all: $(LINK_NAME)
 
 $(NAME): $(OBJS)
-	$(CC) -shared $(LDFLAGS) $^ -o $@ $(LDLIBS)
+	$(CC) $(LDFLAGS) $^ -o $@ $(LDLIBS)
 
 $(LINK_NAME): $(NAME)
 	ln -sf $< $@
@@ -68,21 +35,17 @@ $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
 	@mkdir -p $(@D)
 	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
 
-$(TEST): $(NAME)
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(TEST_DIR)/main.c -o $@ $(LDFLAGS)
+$(EXEC): $(LINK_NAME) $(TEST_DIR)/main.c
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(TEST_DIR)/main.c -o $@
 
-run: $(TEST)
-	LD_PRELOAD=./$(LINK_NAME) ./$(TEST)
-
-test: run
+run: all $(EXEC)
+	LD_PRELOAD=./$(LINK_NAME) ./$(EXEC)
 
 clean:
-	$(RM) $(BUILD_DIR)
+	rm -rf $(BUILD_DIR)
 
 fclean: clean
-	$(RM) $(NAME)
-	$(RM) $(LINK_NAME)
-	$(RM) $(TEST)
+	rm -f $(NAME) $(LINK_NAME) $(EXEC)
 
 re: fclean all
 
