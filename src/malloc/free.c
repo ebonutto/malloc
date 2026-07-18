@@ -74,3 +74,17 @@ void free(void *ptr)
 		history_push(LOG_FREE, ptr, NULL, 0);
 	pthread_mutex_unlock(&g_malloc.lock);
 }
+
+__attribute__((destructor))
+static void munmap_zones(void)
+{
+	t_zone *curr;
+	t_zone *tmp;
+
+	curr = g_malloc.tiny;
+	while (curr) {
+		tmp = curr;
+		curr = curr->next;
+		munmap(curr, zone->size);
+	}
+}
