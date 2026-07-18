@@ -23,7 +23,7 @@ t_zone *create_zone(size_t zone_size, size_t chunk_type)
 	zone = mmap(NULL, zone_size, PROT_READ | PROT_WRITE,
 	            MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
 	if (zone == MAP_FAILED)
-		return (perror("mmap()"), NULL);
+		return (NULL);
 	zone->size = zone_size;
 	zone->prev = NULL;
 	zone->next = NULL;
