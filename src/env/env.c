@@ -1,20 +1,12 @@
 #include "malloc_int.h"
 
-#include <stddef.h> // NULL
 #include <stdlib.h> // getenv()
 
+__attribute__((constructor))
 void init_env(void)
 {
-	static int initialized = 0;
-	char *value;
-
-	if (initialized)
-		return ;
-	value = getenv("MALLOC_HISTORY");
-	if (value)
+	if (getenv("MALLOC_HISTORY"))
 		g_malloc.flags |= MALLOC_HISTORY;
-	value = getenv("MALLOC_HEXDUMP");
-	if (value)
+	if (getenv("MALLOC_HEXDUMP"))
 		g_malloc.flags |= MALLOC_HEXDUMP;
-	initialized = 1;
 }

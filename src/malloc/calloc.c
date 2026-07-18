@@ -22,7 +22,6 @@ void *calloc(size_t count, size_t size)
 {
 	void *ptr;
 
-	init_env();
 	pthread_mutex_lock(&g_malloc.lock);
 	ptr = calloc_impl(count, size);
 	if (g_malloc.flags & MALLOC_HISTORY)

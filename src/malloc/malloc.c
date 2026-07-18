@@ -48,7 +48,6 @@ void *malloc(size_t size)
 {
 	void *ptr;
 
-	init_env();
 	pthread_mutex_lock(&g_malloc.lock);
 	ptr = malloc_impl(size);
 	if (g_malloc.flags & MALLOC_HISTORY)
