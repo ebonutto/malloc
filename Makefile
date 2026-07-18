@@ -36,7 +36,7 @@ $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
 	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
 
 $(EXEC): $(LINK_NAME) $(TEST_DIR)/main.c
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(TEST_DIR)/main.c -o $@
+	$(CC) -I$(INC_DIR) $(CFLAGS) $(TEST_DIR)/main.c -o $@
 
 run: all $(EXEC)
 	LD_PRELOAD=./$(LINK_NAME) ./$(EXEC)
