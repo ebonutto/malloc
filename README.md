@@ -39,3 +39,7 @@ void *malloc(size_t size);
 # Resources
 
 - [📖 malloc(3) — Linux manual page](https://man7.org/linux/man-pages/man3/malloc.3.html)
+
+
+LD_PRELOAD=./$(LINK_NAME) /usr/bin/time -v ./$(EXEC)
+
