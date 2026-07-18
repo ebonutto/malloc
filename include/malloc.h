@@ -11,7 +11,7 @@ void *realloc(void *ptr, size_t size);
 
 void free(void *ptr);
 
-void show_alloc_mem(void);
-void show_alloc_mem_ex(void);
+void show_alloc_mem(void) __attribute__((weak));
+void show_alloc_mem_ex(void) __attribute__((weak));
 
 #endif
