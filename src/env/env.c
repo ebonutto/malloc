@@ -3,7 +3,7 @@
 #include <stdlib.h> // getenv()
 
 __attribute__((constructor))
-void init_env(void)
+static void init_env(void)
 {
 	if (getenv("MALLOC_HISTORY"))
 		g_malloc.flags |= MALLOC_HISTORY;
