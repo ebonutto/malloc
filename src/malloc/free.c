@@ -5,7 +5,7 @@
 #include <pthread.h> // pthread_mutex_lock(), pthread_mutex_unlock()
 #include <stddef.h> // NULL
 
-static t_chunk *coalesce(t_chunk *curr)
+static void coalesce(t_chunk *curr)
 {
 	t_chunk *prev;
 	t_chunk *next;
@@ -13,57 +13,43 @@ static t_chunk *coalesce(t_chunk *curr)
 	prev = curr->prev;
 	next = curr->next;
 	if (prev && (prev->flags & CHUNK_FREE)) {
-		prev->size += curr->size + CHUNK_HEADER;
+		prev->size += CHUNK_HEADER + curr->size;
 		prev->next = next;
 		if (next)
 			next->prev = prev;
 		curr = prev;
 	}
 	if (next && (next->flags & CHUNK_FREE)) {
-		curr->size += next->size + CHUNK_HEADER;
+		curr->size += CHUNK_HEADER + next->size;
 		curr->next = next->next;
 		if (next->next)
 			next->next->prev = curr;
 	}
-	return (curr);
-}
-
-static t_zone **get_zone_head(t_chunk *chunk)
-{
-	if (chunk->flags & CHUNK_TINY)
-		return (&g_malloc.tiny);
-	if (chunk->flags & CHUNK_SMALL)
-		return (&g_malloc.small);
-	return (&g_malloc.large);
-}
-
-static void zone_unlink(t_zone **head, t_zone *zone)
-{
-	if (zone->prev)
-		zone->prev->next = zone->next;
-	else
-		*head = zone->next;
-	if (zone->next)
-		zone->next->prev = zone->prev;
 }
 
 void free_impl(void *ptr)
 {
-	t_chunk *curr;
+	t_chunk *chunk;
 	t_zone *zone;
 
 	if (!ptr)
 		return ;
-	curr = (t_chunk *)((char *)ptr - CHUNK_HEADER);
-	if (curr->flags & CHUNK_FREE)
-		return ;
-	curr->flags |= CHUNK_FREE;
-	curr = coalesce(curr);
-	if (!curr->prev && !curr->next) {
-		zone = (t_zone *)((char *)curr - ZONE_HEADER);
-		zone_unlink(get_zone_head(curr), zone);
+	chunk = (t_chunk *)((char *)ptr - CHUNK_HEADER);
+	if (chunk->flags & CHUNK_LARGE) {
+		zone = (t_zone *)((char *)chunk - ZONE_HEADER);
+		if (zone->prev)
+			zone->prev->next = zone->next;
+		else
+			g_malloc.large = zone->next;
+		if (zone->next)
+			zone->next->prev = zone->prev;
 		munmap(zone, zone->size);
+		return ;
 	}
+	if (chunk->flags & CHUNK_FREE)
+		return ;
+	chunk->flags |= CHUNK_FREE;
+	coalesce(chunk);
 }
 
 void free(void *ptr)
@@ -75,16 +61,23 @@ void free(void *ptr)
 	pthread_mutex_unlock(&g_malloc.lock);
 }
 
-__attribute__((destructor))
-static void munmap_zones(void)
+static void free_zone_list(t_zone *zone)
 {
 	t_zone *curr;
-	t_zone *tmp;
+	t_zone *next;
 
-	curr = g_malloc.tiny;
+	curr = zone;
 	while (curr) {
-		tmp = curr;
-		curr = curr->next;
-		munmap(curr, zone->size);
+		next = curr->next;
+		munmap(curr, curr->size);
+		curr = next;
 	}
+}
+
+__attribute__((destructor))
+static void free_all_zones(void)
+{
+	free_zone_list(g_malloc.tiny);
+	free_zone_list(g_malloc.small);
+	free_zone_list(g_malloc.large);
 }
