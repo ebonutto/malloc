@@ -22,6 +22,7 @@ static void *alloc_in_new_zone(t_zone **head, size_t size, size_t zone_size,
 		return (NULL);
 
 	zone_prepend(head, zone);
+
 	return (alloc_chunk(zone->chunks, size, chunk_type));
 }
 
@@ -35,6 +36,21 @@ static void *alloc_in_zone(t_zone **head, size_t size, size_t zone_size,
 		return (alloc_chunk(chunk, size, chunk_type));
 
 	return (alloc_in_new_zone(head, size, zone_size, chunk_type));
+}
+
+static void *alloc_large(size_t size)
+{
+	t_zone *zone;
+
+	zone = create_zone(ZONE_HEADER + CHUNK_HEADER + size, CHUNK_LARGE);
+	if (!zone)
+		return (NULL);
+
+	zone->chunks->flags &= ~CHUNK_FREE;
+
+	zone_prepend(&g_malloc.large, zone);
+
+	return ((char *)zone + ZONE_HEADER + CHUNK_HEADER);
 }
 
 void *malloc_impl(size_t size)
@@ -52,9 +68,7 @@ void *malloc_impl(size_t size)
 		return (alloc_in_zone(&g_malloc.small, size, SMALL_SIZE,
 		                      CHUNK_SMALL));
 
-	return (alloc_in_new_zone(&g_malloc.large, size,
-	                          ZONE_HEADER + CHUNK_HEADER + size,
-	                          CHUNK_LARGE));
+	return (alloc_large(size));
 }
 
 void *malloc(size_t size)

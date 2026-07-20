@@ -9,7 +9,7 @@ t_chunk *create_chunk(const t_zone *zone, size_t chunk_type)
 	chunk = (t_chunk *)((char *)zone + ZONE_HEADER);
 
 	chunk->size = zone->size - ZONE_HEADER - CHUNK_HEADER;
-	chunk->flags = CHUNK_FREE | chunk_type;
+	chunk->flags = chunk_type | CHUNK_FREE;
 	chunk->prev = NULL;
 	chunk->next = NULL;
 
