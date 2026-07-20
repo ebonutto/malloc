@@ -1,54 +1,63 @@
 #include "malloc_int.h"
 
-#include <pthread.h> // pthread_mutex_lock(), pthread_mutex_unlock()
-
-static const char *log_str(t_log_op op)
+static void putnbr_fixed(size_t nb, size_t width)
 {
-	if (op == LOG_MALLOC)
-		return ("MALLOC");
-	if (op == LOG_FREE)
-		return ("FREE");
-	if (op == LOG_REALLOC)
-		return ("REALLOC");
-	if (op == LOG_CALLOC)
-		return ("CALLOC");
-	return ("UNKNOWN");
+	char	buf[20];
+	size_t	len;
+
+	len = 0;
+	while (nb)
+	{
+		buf[len++] = '0' + nb % 10;
+		nb /= 10;
+	}
+	while (len < width)
+		buf[len++] = '0';
+	while (len)
+		putchar(buf[--len]);
 }
 
 static void show_logs(t_history *history, size_t total, size_t start)
 {
-	t_log *log;
+	static const char *const op_str[] = {
+		[LOG_MALLOC] = "MALLOC ",
+		[LOG_FREE] = "FREE   ",
+		[LOG_REALLOC] = "REALLOC",
+		[LOG_CALLOC] = "CALLOC "
+	};
 	size_t i;
+	t_log *log;
 
 	i = 0;
 	while (i < total) {
 		log = &history->logs[(start + i) & (HISTORY_SIZE - 1)];
 
 		putchar('#');
-		putnbr(i + 1);
+		putnbr_fixed(i + 1, 4);
 
-		putstr(" [");
-		putstr(log_str(log->op));
-		putstr("] ");
+		putstr("  ");
+
+		putstr(op_str(log->op));
+
+		putstr("  ");
 
 		putptr(log->ptr);
 
-		if (log->op == LOG_REALLOC) {
-			putstr(" -> ");
-			putptr(log->new_ptr);
-		}
-
 		if (log->op != LOG_FREE) {
-			putchar(' ');
+			if (log->op == LOG_REALLOC) {
+				putstr(" -> ");
+				putptr(log->new_ptr);
+			}
+
+			putstr("  ");
+
 			putnbr(log->size);
+			putstr(" byte(s)");
 		}
 
 		putchar('\n');
 		i++;
-
-		// printf("#%04zu [%s] %p", i, op_str[log->op], log->ptr);
 	}
-	(void)log;
 }
 
 void show_history(void)

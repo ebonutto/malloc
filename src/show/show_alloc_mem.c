@@ -48,7 +48,7 @@ static size_t show_zones(t_zone *zone, const char *name)
 	return (total);
 }
 
-static void show_alloc_mem_impl(void)
+void show_alloc_mem(void)
 {
 	size_t total;
 
