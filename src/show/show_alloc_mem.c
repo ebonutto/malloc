@@ -1,3 +1,4 @@
+#include "malloc.h"
 #include "malloc_int.h"
 
 #include <pthread.h> // pthread_mutex_lock(), pthread_mutex_unlock()
