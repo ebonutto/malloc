@@ -58,6 +58,7 @@ static size_t show_chunks(t_chunk *chunk)
 		total += chunk->size;
 		chunk = chunk->next;
 	}
+
 	return (total);
 }
 
@@ -82,12 +83,15 @@ static size_t show_zones(t_zone *zone, const char *name)
 		total += show_chunks(zone->chunks);
 		zone = zone->next;
 	}
+
 	return (total);
 }
 
-static void show_alloc_mem_ex_impl(void)
+static void show_alloc_mem_ex(void)
 {
 	size_t total;
+
+	pthread_mutex_lock(&g_malloc.lock);
 
 	if (g_malloc.flags & MALLOC_DATA)
 		show_data();
@@ -103,11 +107,6 @@ static void show_alloc_mem_ex_impl(void)
 	putstr("Total : ");
 	putnbr(total);
 	putstr(" byte(s)\n");
-}
 
-void show_alloc_mem_ex(void)
-{
-	pthread_mutex_lock(&g_malloc.lock);
-	show_alloc_mem_ex_impl();
 	pthread_mutex_unlock(&g_malloc.lock);
 }
