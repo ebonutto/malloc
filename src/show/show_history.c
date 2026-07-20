@@ -1,29 +1,12 @@
 #include "malloc_int.h"
 
-static void putnbr_fixed(size_t nb, size_t width)
-{
-	char	buf[20];
-	size_t	len;
-
-	len = 0;
-	while (nb)
-	{
-		buf[len++] = '0' + nb % 10;
-		nb /= 10;
-	}
-	while (len < width)
-		buf[len++] = '0';
-	while (len)
-		putchar(buf[--len]);
-}
-
 static void show_logs(t_history *history, size_t total, size_t start)
 {
 	static const char *const op_str[] = {
-		[LOG_MALLOC] = "MALLOC ",
-		[LOG_FREE] = "FREE   ",
+		[LOG_MALLOC] = "MALLOC",
+		[LOG_FREE] = "FREE",
 		[LOG_REALLOC] = "REALLOC",
-		[LOG_CALLOC] = "CALLOC "
+		[LOG_CALLOC] = "CALLOC"
 	};
 	size_t i;
 	t_log *log;
@@ -33,11 +16,11 @@ static void show_logs(t_history *history, size_t total, size_t start)
 		log = &history->logs[(start + i) & (HISTORY_SIZE - 1)];
 
 		putchar('#');
-		putnbr_fixed(i + 1, 4);
+		putnbr(i);
 
 		putstr("  ");
 
-		putstr(op_str(log->op));
+		putstr(op_str[log->op]);
 
 		putstr("  ");
 
