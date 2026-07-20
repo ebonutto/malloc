@@ -8,10 +8,16 @@ Here's a little to-do list for this project
 - [X] Use __attribute_((constructor((101)))) for init_env()
 
 ### Other
-- [] Fix calloc history overflow
+- [X] Fix calloc history overflow
 
 - [X] Regler le pb du free -> done
-- [] Regler le pb du printf -> faire le sien
+- [X] Regler le pb du printf -> faire le sien
 - [] Regler le pb du realloc -> passage d'une zone a une autre.
+- [X] Regler le pb du printf dans les bonus
 - [X] Constructor (init_env) + Destructor (munmap tiny + small)
-- [] Clean CHUNK_HEADER in chunk.c
+- [X] Clean CHUNK_HEADER in chunk.c
+- [] Still splitting chunks for larges -> remove this.
+- [X] Replace getpagesize() with sysconf(_SC_PAGESIZE)
+- [] API publique
+- [X] DATA
+- [] Makefile
