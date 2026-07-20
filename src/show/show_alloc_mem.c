@@ -2,7 +2,6 @@
 
 #include <pthread.h> // pthread_mutex_lock(), pthread_mutex_unlock()
 #include <stddef.h> // size_t
-#include <stdio.h> // printf()
 
 static size_t show_chunks(t_chunk *chunk)
 {
@@ -15,8 +14,12 @@ static size_t show_chunks(t_chunk *chunk)
 		if (!(chunk->flags & CHUNK_FREE)) {
 			start = (void *)(chunk + 1);
 			end = (void *)((char *)start + chunk->size);
-			printf("%p - %p : %zu bytes\n", start, end,
-			       chunk->size);
+			putptr(start);
+			putstr(" - ");
+			putptr(end);
+			putstr(" : ");
+			putnbr(chunk->size);
+			putstr(" byte(s)\n");
 			total += chunk->size;
 		}
 		chunk = chunk->next;
@@ -24,14 +27,15 @@ static size_t show_chunks(t_chunk *chunk)
 	return (total);
 }
 
-static size_t show_zones(t_zone *g_zone, const char *zone_name)
+static size_t show_zones(t_zone *zone, const char *name)
 {
-	t_zone *zone;
 	size_t total;
 
-	printf("%s : %p\n", zone_name, (void *)g_zone);
+	putstr(name);
+	putstr(" : ");
+	putptr(zone);
+	putstr("\n");
 	total = 0;
-	zone = g_zone;
 	while (zone) {
 		total += show_chunks(zone->chunks);
 		zone = zone->next;
@@ -47,7 +51,9 @@ static void show_alloc_mem_impl(void)
 	total += show_zones(g_malloc.tiny, "TINY");
 	total += show_zones(g_malloc.small, "SMALL");
 	total += show_zones(g_malloc.large, "LARGE");
-	printf("Total : %zu byte(s)\n", total);
+	putstr("Total : ");
+	putnbr(total);
+	putstr(" byte(s)\n");
 }
 
 void show_alloc_mem(void)
