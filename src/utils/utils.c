@@ -2,46 +2,44 @@
 
 #include <unistd.h> // write()
 
-#include <stdint.h> // uintptr_t
+#include <stddef.h> // size_t, uintptr_t
 
-size_t strlen(const char *str)
+void putchar(int c)
 {
-	size_t i;
+	unsigned char ch;
 
-	i = 0;
-	while (str[i])
-		i++;
-	return (i);
+	ch = c;
+	write(1, &ch, 1);
 }
 
 void putstr(const char *str)
 {
-	write(1, str, strlen(str));
+	size_t count;
+
+	count = 0;
+	while (str[count])
+		count++;
+	write(1, str, count);
 }
 
 void putnbr(size_t nb)
 {
-	char c;
-
 	if (nb >= 10)
 		putnbr(nb / 10);
-	c = '0' + nb % 10;
-	write(1, &c, 1);
+	putchar('0' + nb % 10);
 }
 
-static void putptr_rec(uintptr_t ptr)
+static void puthex(uintptr_t nb)
 {
 	static const char hex[] = "0123456789abcdef";
-	char c;
 
-	if (ptr >= 16)
-		putptr_rec(ptr / 16);
-	c = hex[ptr % 16];
-	write(STDOUT_FILENO, &c, 1);
+	if (nb >= 16)
+		puthex(nb / 16);
+	putchar(hex[nb % 16]);
 }
 
 void putptr(const void *ptr)
 {
 	putstr("0x");
-	putptr_rec((uintptr_t)ptr);
+	puthex((uintptr_t)ptr);
 }
