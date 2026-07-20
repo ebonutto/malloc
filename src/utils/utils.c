@@ -1,6 +1,20 @@
-#include <unistd.h>
+#include "malloc_int.h"
 
-void putstr(char *str)
+#include <unistd.h> // write()
+
+#include <stdint.h> // uintptr_t
+
+size_t strlen(const char *str)
+{
+	size_t i;
+
+	i = 0;
+	while (str[i])
+		i++;
+	return (i);
+}
+
+void putstr(const char *str)
 {
 	write(1, str, strlen(str));
 }
@@ -15,14 +29,19 @@ void putnbr(size_t nb)
 	write(1, &c, 1);
 }
 
-void puthex(size_t nb)
+static void putptr_rec(uintptr_t ptr)
 {
-	if (nb >= 16)
-		puthex(nb / 16);
-	write("")
+	static const char hex[] = "0123456789abcdef";
+	char c;
+
+	if (ptr >= 16)
+		putptr_rec(ptr / 16);
+	c = hex[ptr % 16];
+	write(STDOUT_FILENO, &c, 1);
 }
 
-int main()
+void putptr(const void *ptr)
 {
-	write(1, "\n", 1);
+	putstr("0x");
+	putptr_rec((uintptr_t)ptr);
 }

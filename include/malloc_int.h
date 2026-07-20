@@ -79,6 +79,11 @@ typedef struct s_malloc_state {
 extern t_malloc_state g_malloc;
 
 /* Prototypes */
+size_t strlen(const char *str);
+void putstr(const char *str);
+void putnbr(size_t nb);
+void putptr(const void *ptr);
+
 void history_push(t_log_op op, void *ptr, void *new_ptr, size_t size);
 
 t_chunk *create_chunk(const t_zone *zone, size_t chunk_type);
