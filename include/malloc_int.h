@@ -18,8 +18,9 @@
 
 #define HISTORY_SIZE 16 //! Has to be a multiple of 2
 
-#define MALLOC_HISTORY (1 << 0)
+#define MALLOC_DATA (1 << 0)
 #define MALLOC_HEXDUMP (1 << 1)
+#define MALLOC_HISTORY (1 << 2)
 
 /* Enums */
 typedef enum e_log_op {
@@ -47,7 +48,7 @@ typedef struct s_zone {
 typedef struct s_log {
 	t_log_op op;
 	void *ptr;
-	void *new_ptr;
+	void *new_ptr; //! For realloc() only
 	size_t size;
 } t_log;
 
@@ -79,7 +80,7 @@ typedef struct s_malloc_state {
 extern t_malloc_state g_malloc;
 
 /* Prototypes */
-size_t strlen(const char *str);
+void putchar(int c);
 void putstr(const char *str);
 void putnbr(size_t nb);
 void putptr(const void *ptr);
@@ -90,12 +91,14 @@ t_chunk *create_chunk(const t_zone *zone, size_t chunk_type);
 t_chunk *find_free_chunk(t_zone *zone, size_t size);
 void *alloc_chunk(t_chunk *chunk, size_t size, size_t chunk_type);
 
+size_t get_page_size(void);
 t_zone *create_zone(size_t zone_size, size_t chunk_type);
 void zone_prepend(t_zone **head, t_zone *zone);
 
 void *malloc_impl(size_t size);
 void free_impl(void *ptr);
 
+void hexdump(const void *ptr, size_t size);
 void show_history(void);
 
 #endif
