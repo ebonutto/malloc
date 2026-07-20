@@ -36,7 +36,7 @@ static size_t show_zones(t_zone *zone, const char *name)
 	putstr(name);
 	putstr(" : ");
 	putptr(zone);
-	putstr("\n");
+	putchar('\n');
 
 	total = 0;
 	while (zone) {
