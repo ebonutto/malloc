@@ -12,7 +12,7 @@ t_malloc_state g_malloc = {
 	0
 };
 
-static void *alloc_in_new_zone(t_zone **head, size_t size, size_t zone_size,
+static void *alloc_in_new_zone(t_zone **head, size_t zone_size, size_t size,
                                size_t chunk_type)
 {
 	t_zone *zone;
@@ -26,7 +26,7 @@ static void *alloc_in_new_zone(t_zone **head, size_t size, size_t zone_size,
 	return (alloc_chunk(zone->chunks, size, chunk_type));
 }
 
-static void *alloc_in_zone(t_zone **head, size_t size, size_t zone_size,
+static void *alloc_in_zone(t_zone **head, size_t zone_size, size_t size,
                            size_t chunk_type)
 {
 	t_chunk *chunk;
@@ -35,7 +35,7 @@ static void *alloc_in_zone(t_zone **head, size_t size, size_t zone_size,
 	if (chunk)
 		return (alloc_chunk(chunk, size, chunk_type));
 
-	return (alloc_in_new_zone(head, size, zone_size, chunk_type));
+	return (alloc_in_new_zone(head, zone_size, size, chunk_type));
 }
 
 static void *alloc_large(size_t size)
@@ -61,11 +61,11 @@ void *malloc_impl(size_t size)
 	size = ALIGN16(size);
 
 	if (size <= TINY_MAX)
-		return (alloc_in_zone(&g_malloc.tiny, size, TINY_SIZE,
+		return (alloc_in_zone(&g_malloc.tiny, TINY_SIZE, size,
 		                      CHUNK_TINY));
 
 	if (size <= SMALL_MAX)
-		return (alloc_in_zone(&g_malloc.small, size, SMALL_SIZE,
+		return (alloc_in_zone(&g_malloc.small, SMALL_SIZE, size,
 		                      CHUNK_SMALL));
 
 	return (alloc_large(size));
