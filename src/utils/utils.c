@@ -1,8 +1,7 @@
 #include "malloc_int.h"
 
-#include <unistd.h> // write()
-
 #include <stddef.h> // size_t, uintptr_t
+#include <unistd.h> // write()
 
 void putchar(int c)
 {
