@@ -39,7 +39,7 @@ void *alloc_chunk(t_chunk *chunk, size_t size, size_t chunk_type)
 	chunk->flags &= ~CHUNK_FREE;
 	if (old_size - size >= CHUNK_HEADER) {
 		chunk->size = size;
-		leftover = (t_chunk *)((char *)chunk + CHUNK_HEADER + size);
+		leftover = (t_chunk *)(CHUNK_HEADER + (char *)chunk + size);
 		leftover->size = old_size - size - CHUNK_HEADER;
 		leftover->flags = CHUNK_FREE | chunk_type;
 		leftover->prev = chunk;
@@ -48,5 +48,5 @@ void *alloc_chunk(t_chunk *chunk, size_t size, size_t chunk_type)
 			chunk->next->prev = leftover;
 		chunk->next = leftover;
 	}
-	return ((char *)chunk + CHUNK_HEADER);
+	return (CHUNK_HEADER + (char *)chunk);
 }
