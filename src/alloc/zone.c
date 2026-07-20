@@ -3,15 +3,14 @@
 #include <sys/mman.h> // MAP_ANONYMOUS, MAP_FAILED, MAP_PRIVATE, PROT_READ, PROT_WRITE, mmap()
 
 #include <stddef.h> // size_t, NULL
-#include <stdio.h> // perror()
-#include <unistd.h> // getpagesize()
+#include <unistd.h> // _SC_PAGESIZE, sysconf()
 
-static size_t page_size(void)
+size_t get_page_size(void)
 {
 	static size_t page = 0;
 
 	if (!page)
-		page = getpagesize();
+		page = sysconf(_SC_PAGESIZE);
 	return (page);
 }
 
@@ -19,15 +18,18 @@ t_zone *create_zone(size_t zone_size, size_t chunk_type)
 {
 	t_zone *zone;
 
-	zone_size = ALIGN_PAGE(zone_size, page_size());
+	zone_size = ALIGN_PAGE(zone_size, get_page_size());
+
 	zone = mmap(NULL, zone_size, PROT_READ | PROT_WRITE,
 	            MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
 	if (zone == MAP_FAILED)
 		return (NULL);
+
 	zone->size = zone_size;
 	zone->prev = NULL;
 	zone->next = NULL;
 	zone->chunks = create_chunk(zone, chunk_type);
+
 	return (zone);
 }
 
