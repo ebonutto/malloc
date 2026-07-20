@@ -12,14 +12,16 @@ static size_t show_chunks(t_chunk *chunk)
 	total = 0;
 	while (chunk) {
 		if (!(chunk->flags & CHUNK_FREE)) {
-			start = (void *)(chunk + 1);
-			end = (void *)((char *)start + chunk->size);
+			start = (char *)chunk + sizeof(t_chunk);
+			end = (char *)start + chunk->size;
+
 			putptr(start);
 			putstr(" - ");
 			putptr(end);
 			putstr(" : ");
 			putnbr(chunk->size);
 			putstr(" byte(s)\n");
+
 			total += chunk->size;
 		}
 		chunk = chunk->next;
@@ -35,6 +37,7 @@ static size_t show_zones(t_zone *zone, const char *name)
 	putstr(" : ");
 	putptr(zone);
 	putstr("\n");
+
 	total = 0;
 	while (zone) {
 		total += show_chunks(zone->chunks);
@@ -51,6 +54,7 @@ static void show_alloc_mem_impl(void)
 	total += show_zones(g_malloc.tiny, "TINY");
 	total += show_zones(g_malloc.small, "SMALL");
 	total += show_zones(g_malloc.large, "LARGE");
+
 	putstr("Total : ");
 	putnbr(total);
 	putstr(" byte(s)\n");
