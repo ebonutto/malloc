@@ -100,9 +100,6 @@ static void show_alloc_mem_ex_impl(void)
 	if (g_malloc.flags & MALLOC_HISTORY)
 		show_history();
 
-	// if (g_malloc.flags & MALLOC_LEAKS)
-	// 	show_leaks();
-
 	putstr("Total : ");
 	putnbr(total);
 	putstr(" byte(s)\n");

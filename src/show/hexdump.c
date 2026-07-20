@@ -2,23 +2,6 @@
 
 #include <stddef.h> // size_t
 
-static void puthex_fixed(size_t nb, size_t width)
-{
-	static const char hex[] = "0123456789abcdef";
-	char buf[32];
-	size_t len;
-
-	len = 0;
-	while (nb) {
-		buf[len++] = hex[nb & 0xf];
-		nb >>= 4;
-	}
-	while (len < width)
-		buf[len++] = '0';
-	while (len)
-		putchar(buf[--len]);
-}
-
 static void puthex_byte(unsigned char byte)
 {
 	static const char hex[] = "0123456789abcdef";
@@ -35,10 +18,11 @@ void hexdump(const void *ptr, size_t size)
 	unsigned char c;
 
 	p = (const unsigned char *)ptr;
+
 	i = 0;
 	while (i < size) {
 		putstr("      ");
-		puthex_fixed(i, 4);
+		putptr(p + i);
 		putstr("  ");
 
 		j = 0;
@@ -62,6 +46,7 @@ void hexdump(const void *ptr, size_t size)
 			putchar(c >= 32 && c < 127 ? c : '.');
 			j++;
 		}
+
 		putchar('\n');
 		i += 16;
 	}
