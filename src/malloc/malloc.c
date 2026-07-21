@@ -23,7 +23,6 @@ static void *alloc_in_new_zone(t_zone **head, size_t zone_size, size_t size,
 		return (NULL);
 
 	zone_prepend(head, zone);
-
 	return (alloc_chunk(zone->chunks, size, chunk_type));
 }
 
@@ -48,9 +47,7 @@ static void *alloc_large(size_t size)
 		return (NULL);
 
 	zone->chunks->flags &= ~CHUNK_FREE;
-
 	zone_prepend(&g_malloc.large, zone);
-
 	return ((char *)zone + ZONE_HEADER + CHUNK_HEADER);
 }
 

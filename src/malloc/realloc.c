@@ -8,18 +8,33 @@
 static void *realloc_impl(void *ptr, size_t size)
 {
 	t_chunk *chunk;
+	size_t new_type;
 	void *new;
 
 	if (!ptr)
 		return (malloc_impl(size));
 	if (size == 0)
 		return (free_impl(ptr), NULL);
+
 	size = ALIGN16(size);
 	chunk = (t_chunk *)((char *)ptr - CHUNK_HEADER);
-	if (chunk->size >= size)
-		return (ptr);
-	//TODO ADD LEFTOVER CASE
+
+	if (size <= TINY_MAX)
+		new_type = CHUNK_TINY;
+	else if (size <= SMALL_MAX)
+		new_type = CHUNK_SMALL;
+	else
+		new_type = CHUNK_LARGE;
+
+	// if (chunk->flags & (CHUNK_TINY | CHUNK_SMALL) == new_type) {
+	
+	// 	// COALESCE
+	// }
+
 	new = malloc_impl(size);
+	if (!new)
+		return (NULL);
+
 	memcpy(new, ptr, chunk->size);
 	free_impl(ptr);
 	return (new);
@@ -30,9 +45,12 @@ void *realloc(void *ptr, size_t size)
 	void *new_ptr;
 
 	pthread_mutex_lock(&g_malloc.lock);
+
 	new_ptr = realloc_impl(ptr, size);
+
 	if (g_malloc.flags & MALLOC_HISTORY)
 		history_push(LOG_REALLOC, ptr, new_ptr, size);
+
 	pthread_mutex_unlock(&g_malloc.lock);
 	return (new_ptr);
 }
