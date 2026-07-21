@@ -84,6 +84,5 @@ void *malloc(size_t size)
 		history_push(LOG_MALLOC, ptr, NULL, size);
 
 	pthread_mutex_unlock(&g_malloc.lock);
-
 	return (ptr);
 }
