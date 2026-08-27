@@ -78,10 +78,10 @@ typedef struct s_malloc_state {
 extern t_malloc_state g_malloc;
 
 /* Prototypes */
-void putchar(int c);
-void putstr(const char *str);
-void putnbr(size_t nb);
-void putptr(const void *ptr);
+void ft_putchar(int c);
+void ft_putstr(const char *str);
+void ft_putnbr(size_t nb);
+void ft_putptr(const void *ptr);
 
 void history_push(t_log_op op, void *ptr, void *new_ptr, size_t size);
 
@@ -94,6 +94,7 @@ t_zone *create_zone(size_t zone_size, size_t chunk_type);
 void zone_prepend(t_zone **head, t_zone *zone);
 
 void *malloc_impl(size_t size);
+void coalesce(t_chunk *curr);
 void free_impl(void *ptr);
 
 void hexdump(const void *ptr, size_t size);

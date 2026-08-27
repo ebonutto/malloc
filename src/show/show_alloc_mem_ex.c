@@ -6,27 +6,27 @@
 
 static void show_data(void)
 {
-	putstr("--- DATA ---\n");
+	ft_putstr("--- DATA ---\n");
 
-	putstr("  pagesize : ");
-	putnbr(get_page_size());
-	putstr(" bytes\n");
+	ft_putstr("  pagesize : ");
+	ft_putnbr(get_page_size());
+	ft_putstr(" bytes\n");
 
-	putstr("  TINY_MAX : ");
-	putnbr(TINY_MAX);
-	putstr(" bytes\n");
+	ft_putstr("  TINY_MAX : ");
+	ft_putnbr(TINY_MAX);
+	ft_putstr(" bytes\n");
 
-	putstr("  SMALL_MAX : ");
-	putnbr(SMALL_MAX);
-	putstr(" bytes\n");
+	ft_putstr("  SMALL_MAX : ");
+	ft_putnbr(SMALL_MAX);
+	ft_putstr(" bytes\n");
 
-	putstr("  sizeof(t_zone) : ");
-	putnbr(sizeof(t_zone));
-	putstr(" bytes\n");
+	ft_putstr("  sizeof(t_zone) : ");
+	ft_putnbr(sizeof(t_zone));
+	ft_putstr(" bytes\n");
 
-	putstr("  sizeof(t_chunk) : ");
-	putnbr(sizeof(t_chunk));
-	putstr(" bytes\n");
+	ft_putstr("  sizeof(t_chunk) : ");
+	ft_putnbr(sizeof(t_chunk));
+	ft_putstr(" bytes\n");
 }
 
 static size_t show_chunks(t_chunk *chunk)
@@ -40,18 +40,18 @@ static size_t show_chunks(t_chunk *chunk)
 		start = (char *)chunk + sizeof(t_chunk);
 		end = (char *)start + chunk->size;
 
-		putstr("    --- CHUNK : ");
-		putptr(start);
-		putstr(" - ");
-		putptr(end);
-		putstr(" : ");
-		putnbr(chunk->size);
-		putstr(" bytes (");
+		ft_putstr("    --- CHUNK : ");
+		ft_putptr(start);
+		ft_putstr(" - ");
+		ft_putptr(end);
+		ft_putstr(" : ");
+		ft_putnbr(chunk->size);
+		ft_putstr(" bytes (");
 		if (chunk->flags & CHUNK_FREE)
-			putstr("free");
+			ft_putstr("free");
 		else
-			putstr("occupied");
-		putstr(") ---\n");
+			ft_putstr("occupied");
+		ft_putstr(") ---\n");
 
 		if (!(chunk->flags & CHUNK_FREE) && (g_malloc.flags & MALLOC_HEXDUMP))
 			hexdump(start, chunk->size);
@@ -67,19 +67,19 @@ static size_t show_zones(t_zone *zone, const char *name)
 {
 	size_t total;
 
-	putstr("--- ");
-	putstr(name);
-	putstr(" : ");
-	putptr(zone);
-	putstr(" ---\n");
+	ft_putstr("--- ");
+	ft_putstr(name);
+	ft_putstr(" : ");
+	ft_putptr(zone);
+	ft_putstr(" ---\n");
 
 	total = 0;
 	while (zone) {
-		putstr("  --- ZONE : ");
-		putptr(zone);
-		putstr(" : ");
-		putnbr(zone->size);
-		putstr(" bytes ---\n");
+		ft_putstr("  --- ZONE : ");
+		ft_putptr(zone);
+		ft_putstr(" : ");
+		ft_putnbr(zone->size);
+		ft_putstr(" bytes ---\n");
 
 		total += show_chunks(zone->chunks);
 		zone = zone->next;
@@ -105,9 +105,9 @@ void show_alloc_mem_ex(void)
 	if (g_malloc.flags & MALLOC_HISTORY)
 		show_history();
 
-	putstr("Total : ");
-	putnbr(total);
-	putstr(" byte(s)\n");
+	ft_putstr("Total : ");
+	ft_putnbr(total);
+	ft_putstr(" byte(s)\n");
 
 	pthread_mutex_unlock(&g_malloc.lock);
 }

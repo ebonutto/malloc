@@ -6,8 +6,8 @@ static void puthex_byte(unsigned char byte)
 {
 	static const char hex[] = "0123456789abcdef";
 
-	putchar(hex[byte >> 4]);
-	putchar(hex[byte & 0xf]);
+	ft_putchar(hex[byte >> 4]);
+	ft_putchar(hex[byte & 0xf]);
 }
 
 void hexdump(const void *ptr, size_t size)
@@ -21,33 +21,33 @@ void hexdump(const void *ptr, size_t size)
 
 	i = 0;
 	while (i < size) {
-		putstr("      ");
-		putptr(p + i);
-		putstr("  ");
+		ft_putstr("      ");
+		ft_putptr(p + i);
+		ft_putstr("  ");
 
 		j = 0;
 		while (j < 16) {
 			if (i + j < size) {
 				puthex_byte(p[i + j]);
-				putchar(' ');
+				ft_putchar(' ');
 			}
 			else
-				putstr("   ");
+				ft_putstr("   ");
 			if (j == 7)
-				putchar(' ');
+				ft_putchar(' ');
 			j++;
 		}
 
-		putchar(' ');
+		ft_putchar(' ');
 
 		j = 0;
 		while (j < 16 && i + j < size) {
 			c = p[i + j];
-			putchar(c >= 32 && c < 127 ? c : '.');
+			ft_putchar(c >= 32 && c < 127 ? c : '.');
 			j++;
 		}
 
-		putchar('\n');
+		ft_putchar('\n');
 		i += 16;
 	}
 }

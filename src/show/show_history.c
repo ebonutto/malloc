@@ -15,30 +15,30 @@ static void show_logs(t_history *history, size_t total, size_t start)
 	while (i < total) {
 		log = &history->logs[(start + i) & (HISTORY_SIZE - 1)];
 
-		putchar('#');
-		putnbr(i);
+		ft_putchar('#');
+		ft_putnbr(i);
 
-		putstr("  ");
+		ft_putstr("  ");
 
-		putstr(op_str[log->op]);
+		ft_putstr(op_str[log->op]);
 
-		putstr("  ");
+		ft_putstr("  ");
 
-		putptr(log->ptr);
+		ft_putptr(log->ptr);
 
 		if (log->op != LOG_FREE) {
 			if (log->op == LOG_REALLOC) {
-				putstr(" -> ");
-				putptr(log->new_ptr);
+				ft_putstr(" -> ");
+				ft_putptr(log->new_ptr);
 			}
 
-			putstr("  ");
+			ft_putstr("  ");
 
-			putnbr(log->size);
-			putstr(" byte(s)");
+			ft_putnbr(log->size);
+			ft_putstr(" byte(s)");
 		}
 
-		putchar('\n');
+		ft_putchar('\n');
 		i++;
 	}
 }
@@ -55,14 +55,14 @@ void show_history(void)
 	if (count == 0)
 		return ;
 
-	putstr("-- HISTORY (");
-	putnbr(count);
-	putstr(" log(s)");
+	ft_putstr("-- HISTORY (");
+	ft_putnbr(count);
+	ft_putstr(" log(s)");
 	if (count > HISTORY_SIZE) {
-		putstr(", showing last ");
-		putnbr(HISTORY_SIZE);
+		ft_putstr(", showing last ");
+		ft_putnbr(HISTORY_SIZE);
 	}
-	putstr(") ---\n");
+	ft_putstr(") ---\n");
 
 	total = count < HISTORY_SIZE ? count : HISTORY_SIZE;
 	start = count < HISTORY_SIZE ? 0 : count & (HISTORY_SIZE - 1);
