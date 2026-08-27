@@ -6,7 +6,7 @@
 #include <pthread.h> // pthread_mutex_lock(), pthread_mutex_unlock()
 #include <stddef.h> // NULL
 
-static void coalesce(t_chunk *curr)
+void coalesce(t_chunk *curr)
 {
 	t_chunk *prev;
 	t_chunk *next;
@@ -33,30 +33,35 @@ static void coalesce(t_chunk *curr)
 	}
 }
 
+static void free_large(t_chunk *chunk)
+{
+	t_zone *zone;
+
+	zone = (t_zone *)((char *)chunk - ZONE_HEADER);
+
+	if (zone->prev)
+		zone->prev->next = zone->next;
+	else
+		g_malloc.large = zone->next;
+
+	if (zone->next)
+		zone->next->prev = zone->prev;
+
+	munmap(zone, zone->size);
+	return ;
+}
+
 void free_impl(void *ptr)
 {
 	t_chunk *chunk;
-	t_zone *zone;
 
 	if (!ptr)
 		return ;
 
 	chunk = (t_chunk *)((char *)ptr - CHUNK_HEADER);
 
-	if (chunk->flags & CHUNK_LARGE) {
-		zone = (t_zone *)((char *)chunk - ZONE_HEADER);
-
-		if (zone->prev)
-			zone->prev->next = zone->next;
-		else
-			g_malloc.large = zone->next;
-
-		if (zone->next)
-			zone->next->prev = zone->prev;
-
-		munmap(zone, zone->size);
-		return ;
-	}
+	if (chunk->flags & CHUNK_LARGE)
+		return (free_large(chunk));
 
 	if (chunk->flags & CHUNK_FREE)
 		return ;
