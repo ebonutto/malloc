@@ -1,9 +1,10 @@
 #include "malloc_int.h"
 
-#include <stddef.h> // size_t, uintptr_t
+#include <stddef.h> // size_t
+#include <stdint.h> // uintptr_t
 #include <unistd.h> // write()
 
-void putchar(int c)
+void ft_putchar(int c)
 {
 	unsigned char ch;
 
@@ -11,7 +12,7 @@ void putchar(int c)
 	write(1, &ch, 1);
 }
 
-void putstr(const char *str)
+void ft_putstr(const char *str)
 {
 	size_t count;
 
@@ -21,24 +22,24 @@ void putstr(const char *str)
 	write(1, str, count);
 }
 
-void putnbr(size_t nb)
+void ft_putnbr(size_t nb)
 {
 	if (nb >= 10)
-		putnbr(nb / 10);
-	putchar('0' + nb % 10);
+		ft_putnbr(nb / 10);
+	ft_putchar('0' + nb % 10);
 }
 
-static void puthex(uintptr_t nb)
+static void ft_puthex(uintptr_t nb)
 {
 	static const char hex[] = "0123456789abcdef";
 
 	if (nb >= 16)
-		puthex(nb / 16);
-	putchar(hex[nb % 16]);
+		ft_puthex(nb / 16);
+	ft_putchar(hex[nb % 16]);
 }
 
-void putptr(const void *ptr)
+void ft_putptr(const void *ptr)
 {
-	putstr("0x");
-	puthex((uintptr_t)ptr);
+	ft_putstr("0x");
+	ft_puthex((uintptr_t)ptr);
 }
