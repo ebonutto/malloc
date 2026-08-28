@@ -126,7 +126,7 @@ static void test_realloc(void)
 
 	show_alloc_mem_ex();
 
-	memset(b, '\0', 32);
+	memset(b, 'B', 32);
 	b = realloc(b, 32);
 
 	show_alloc_mem_ex();
