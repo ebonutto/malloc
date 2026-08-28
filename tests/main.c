@@ -112,50 +112,36 @@ static void test_large(void)
 	show_alloc_mem();
 }
 
-// static void test_realloc(void)
-// {
-// 	char *ptr;
-// 	char *new_ptr;
+static void test_realloc(void)
+{
+	void *a, *b, *c;
 
-// 	TEST_HEAD("Test Realloc");
+	a = malloc(32);
+	b = malloc(32);
+	c = malloc(32);
 
-// 	ptr = malloc(16);
-// 	if (!ptr)
-// 		return (void)TEST_FAIL("Initial malloc()");
-// 	memcpy(ptr, "Hello, World!!!", 16);
-// 	TEST_PASS("Initial malloc()");
+	show_alloc_mem_ex();
 
-// 	/* Grow */
-// 	new_ptr = realloc(ptr, 128);
-// 	if (!new_ptr) {
-// 		free(ptr);
-// 		return (void)TEST_FAIL("Realloc grow");
-// 	}
-// 	TEST_PASS("Realloc grow");
-// 	show_alloc_mem_ex();
-// 	ptr = new_ptr;
+	free(a);
 
-// 	/* Data preserved */
-// 	memcmp(ptr, "Hello, World!!!", 16) == 0 ? TEST_PASS("Realloc data preserved") : TEST_FAIL("Realloc data preserved");
+	show_alloc_mem_ex();
 
-// 	/* Shrink */
-// 	new_ptr = realloc(ptr, 8);
-// 	if (!new_ptr) {
-// 		free(ptr);
-// 		return (void)TEST_FAIL("Realloc shrink");
-// 	}
-// 	TEST_PASS("Realloc shrink");
-// 	show_alloc_mem_ex();
-// 	ptr = new_ptr;
-// 	free(ptr);
+	memset(b, '\0', 32);
+	b = realloc(b, 32);
 
-// 	/* realloc(NULL) == malloc() */
-// 	new_ptr = realloc(NULL, 64);
-// 	new_ptr != NULL ? TEST_PASS("realloc(NULL) == malloc()") : TEST_FAIL("realloc(NULL) == malloc()");
-// 	free(new_ptr);
+	show_alloc_mem_ex();
 
-// 	show_alloc_mem();
-// }
+	b = realloc(b, 64);
+
+	show_alloc_mem_ex();
+
+	b = realloc(b, 512);
+
+	show_alloc_mem_ex();
+
+	free(b);
+	free(c);
+}
 
 static void test_fragmentation(void)
 {
@@ -214,7 +200,7 @@ int main(void)
 	test_tiny();
 	test_small();
 	test_large();
-	// test_realloc();
+	test_realloc();
 	test_fragmentation();
 
 	return (0);
