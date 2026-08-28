@@ -6,7 +6,7 @@
 #include <pthread.h> // pthread_mutex_lock(), pthread_mutex_unlock()
 #include <stddef.h> // NULL
 
-void coalesce(t_chunk *curr)
+t_chunk *coalesce(t_chunk *curr)
 {
 	t_chunk *prev;
 	t_chunk *next;
@@ -31,6 +31,8 @@ void coalesce(t_chunk *curr)
 		if (next->next)
 			next->next->prev = curr;
 	}
+
+	return (curr);
 }
 
 static void free_large(t_chunk *chunk)
