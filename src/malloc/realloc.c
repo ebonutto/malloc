@@ -8,6 +8,7 @@ static void *realloc_impl(void *ptr, size_t size)
 {
 	t_chunk *chunk;
 	size_t type;
+	size_t old_size;
 	void *new;
 
 	if (!ptr)
@@ -20,18 +21,21 @@ static void *realloc_impl(void *ptr, size_t size)
 	size = ALIGN16(size);
 	chunk = (t_chunk *)((char *)ptr - CHUNK_HEADER);
 
-	if (size >= chunk->size && size < chunk->size + CHUNK_HEADER)
+	if (size <= chunk->size && chunk->size - size < CHUNK_HEADER)
 		return (ptr);
 
 	type = size <= TINY_MAX ? CHUNK_TINY :
 	       size <= SMALL_MAX ? CHUNK_SMALL : CHUNK_LARGE;
+	old_size = chunk->size;
 
-	if ((chunk->flags & (CHUNK_TINY | CHUNK_SMALL)) == type) { // meme type + taille differente
-		coalesce(chunk);
-		if (chunk->size >= size) { // chunk->size >= size + CHUNK_HEADER
+	if ((chunk->flags & (CHUNK_TINY | CHUNK_SMALL)) == type) {
+		chunk = coalesce(chunk);
+
+		if (chunk->size >= size) {
 			new = (char *)chunk + CHUNK_HEADER;
 			if (new != ptr)
-				ft_memcpy(new, ptr, chunk->size);
+				ft_memmove(new, ptr, MIN(old_size, size));
+
 			return (alloc_chunk(chunk, size, type));
 		}
 	}
@@ -39,7 +43,7 @@ static void *realloc_impl(void *ptr, size_t size)
 	new = malloc_impl(size);
 	if (!new)
 		return (NULL);
-	ft_memcpy(new, ptr, chunk->size);
+	ft_memcpy(new, ptr, MIN(old_size, size));
 	free_impl(ptr);
 	return (new);
 }

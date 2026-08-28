@@ -74,11 +74,14 @@ typedef struct s_malloc_state {
 #define ALIGN16(size) (((size) + 15) & ~15)
 #define ALIGN_PAGE(size, page) (((size) + (page) - 1) & ~((page) - 1))
 
+#define MIN(a, b) (((a) < (b)) ? (a) : (b))
+
 /* Global variables */
 extern t_malloc_state g_malloc;
 
 /* Prototypes */
 void *ft_memcpy(void *dest, const void *src, size_t n);
+void *ft_memmove(void *dst, const void *src, size_t len);
 void *ft_memset(void *b, int c, size_t len);
 void ft_putchar(int c);
 void ft_putstr(const char *str);

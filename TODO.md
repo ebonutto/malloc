@@ -11,4 +11,6 @@ All clear
 - [] Regler le pb du realloc -> passage d'une zone a une autre.
 - [X] API publique
 - [] Makefile
-- [] Améliorer history
+- [X] Améliorer history
+- [X] norm
+- [] tests
