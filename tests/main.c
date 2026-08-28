@@ -192,8 +192,19 @@ static void test_fragmentation(void)
 	show_alloc_mem();
 }
 
+typedef struct s_tests {
+	const char *name;
+	const char *func;
+} t_tests;
+
 int main(void)
 {
+	t_tests tests[] = [
+		{
+			
+		}
+	]
+
 	test_show();
 	test_zero();
 	test_basic();
