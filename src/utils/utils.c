@@ -4,6 +4,16 @@
 #include <stdint.h> // uintptr_t
 #include <unistd.h> // write()
 
+void *ft_memset(void *b, int c, size_t len)
+{
+	unsigned char *d = b;
+
+	while (len--)
+		*d++ = c;
+
+	return (b);
+}
+
 void *ft_memcpy(void *dest, const void *src, size_t n)
 {
 	unsigned char *d = dest;

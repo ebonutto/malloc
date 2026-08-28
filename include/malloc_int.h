@@ -78,6 +78,8 @@ typedef struct s_malloc_state {
 extern t_malloc_state g_malloc;
 
 /* Prototypes */
+void *ft_memcpy(void *dest, const void *src, size_t n);
+void *ft_memset(void *b, int c, size_t len);
 void ft_putchar(int c);
 void ft_putstr(const char *str);
 void ft_putnbr(size_t nb);
@@ -85,9 +87,9 @@ void ft_putptr(const void *ptr);
 
 void history_push(t_log_op op, void *ptr, void *new_ptr, size_t size);
 
-t_chunk *create_chunk(const t_zone *zone, size_t chunk_type);
 t_chunk *find_free_chunk(t_zone *zone, size_t size);
 void *alloc_chunk(t_chunk *chunk, size_t size, size_t chunk_type);
+t_chunk *create_chunk(const t_zone *zone, size_t chunk_type);
 
 size_t get_page_size(void);
 t_zone *create_zone(size_t zone_size, size_t chunk_type);
