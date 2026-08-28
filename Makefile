@@ -39,7 +39,7 @@ $(EXEC): $(LINK_NAME) $(TEST_DIR)/main.c
 	$(CC) -I$(INC_DIR) $(CFLAGS) $(TEST_DIR)/main.c -o $@
 
 run: all $(EXEC)
-	LD_PRELOAD=./$(LINK_NAME) ./$(EXEC)
+	LD_PRELOAD=./$(LINK_NAME) ./$(EXEC) $(ARG)
 
 clean:
 	rm -rf $(BUILD_DIR)
