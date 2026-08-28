@@ -4,21 +4,31 @@
 #include <stdint.h> // uintptr_t
 #include <unistd.h> // write()
 
+void *ft_memcpy(void *dest, const void *src, size_t n)
+{
+	unsigned char *d = dest;
+	const unsigned char *s = src;
+
+	while (n--)
+		*d++ = *s++;
+
+	return (dest);
+}
+
 void ft_putchar(int c)
 {
-	unsigned char ch;
+	unsigned char ch = c;
 
-	ch = c;
 	write(1, &ch, 1);
 }
 
 void ft_putstr(const char *str)
 {
-	size_t count;
+	size_t count = 0;
 
-	count = 0;
 	while (str[count])
 		count++;
+
 	write(1, str, count);
 }
 

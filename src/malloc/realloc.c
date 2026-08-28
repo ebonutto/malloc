@@ -3,7 +3,6 @@
 
 #include <pthread.h> // pthread_mutex_lock(), pthread_mutex_unlock()
 #include <stddef.h> // size_t, NULL
-#include <string.h> // memcpy()
 
 static void *realloc_impl(void *ptr, size_t size)
 {
@@ -32,7 +31,7 @@ static void *realloc_impl(void *ptr, size_t size)
 		if (chunk->size >= size) { // chunk->size >= size + CHUNK_HEADER
 			new = (char *)chunk + CHUNK_HEADER;
 			if (new != ptr)
-				memcpy(new, ptr, chunk->size);
+				ft_memcpy(new, ptr, chunk->size);
 			return (alloc_chunk(chunk, size, type));
 		}
 	}
@@ -40,7 +39,7 @@ static void *realloc_impl(void *ptr, size_t size)
 	new = malloc_impl(size);
 	if (!new)
 		return (NULL);
-	memcpy(new, ptr, chunk->size);
+	ft_memcpy(new, ptr, chunk->size);
 	free_impl(ptr);
 	return (new);
 }
