@@ -12,7 +12,7 @@ TEST_DIR := tests
 BUILD_DIR := .build
 
 CC := cc
-CFLAGS := -Wall -Wextra -Werror -fPIC
+CFLAGS := -Wall -Wextra -Werror -fPIC -fvisibility=hidden
 CPPFLAGS := -I$(INC_DIR) -MMD -MP
 LDFLAGS := -shared
 LDLIBS := -lpthread
