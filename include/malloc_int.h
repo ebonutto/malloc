@@ -95,8 +95,9 @@ size_t get_page_size(void);
 t_zone *create_zone(size_t zone_size, size_t chunk_type);
 void zone_prepend(t_zone **head, t_zone *zone);
 
+t_chunk *coalesce(t_chunk *curr);
+
 void *malloc_impl(size_t size);
-void coalesce(t_chunk *curr);
 void free_impl(void *ptr);
 
 void hexdump(const void *ptr, size_t size);
