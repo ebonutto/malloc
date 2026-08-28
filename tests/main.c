@@ -1,7 +1,7 @@
 #include "malloc.h"
 
-#include <stddef.h> // NULL
-#include <string.h> // memcmp(), memset()
+#include <stddef.h> // size_t, NULL
+#include <string.h> // memset(), strcmp()
 
 #define TINY_MAX 128
 #define SMALL_MAX 1024
@@ -192,27 +192,37 @@ static void test_fragmentation(void)
 	show_alloc_mem();
 }
 
-typedef struct s_tests {
+typedef struct s_test {
 	const char *name;
-	const char *func;
-} t_tests;
+	void (*func)(void);
+} t_test;
 
-int main(void)
+int main(int argc, char **argv)
 {
-	t_tests tests[] = [
-		{
-			
+	t_test tests[] = {
+		{"show", test_show},
+		{"zero", test_zero},
+		{"basic", test_basic},
+		{"tiny", test_tiny},
+		{"small", test_small},
+		{"large", test_large},
+		{"realloc", test_realloc},
+		{"fragmentation", test_fragmentation},
+		{NULL, NULL}
+	};
+	size_t i;
+
+	if (argc != 2)
+		return (1);
+
+	i = 0;
+	while (tests[i].name) {
+		if (strcmp(argv[1], tests[i].name) == 0) {
+			tests[i].func();
+			return (0);
 		}
-	]
+		i++;
+	}
 
-	test_show();
-	test_zero();
-	test_basic();
-	test_tiny();
-	test_small();
-	test_large();
-	test_realloc();
-	test_fragmentation();
-
-	return (0);
+	return (1);
 }
