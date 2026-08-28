@@ -107,7 +107,7 @@ void show_alloc_mem_ex(void)
 
 	ft_putstr("Total : ");
 	ft_putnbr(total);
-	ft_putstr(" byte(s)\n");
+	ft_putstr(" byte(s)\n\n");
 
 	pthread_mutex_unlock(&g_malloc.lock);
 }
