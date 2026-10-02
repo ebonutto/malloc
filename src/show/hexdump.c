@@ -30,8 +30,7 @@ void hexdump(const void *ptr, size_t size)
 			if (i + j < size) {
 				puthex_byte(p[i + j]);
 				ft_putchar(' ');
-			}
-			else
+			} else
 				ft_putstr("   ");
 			if (j == 7)
 				ft_putchar(' ');
