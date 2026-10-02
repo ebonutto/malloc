@@ -21,7 +21,7 @@ SRCS := $(shell find $(SRC_DIR) -name "*.c")
 OBJS := $(SRCS:$(SRC_DIR)/%.c=$(BUILD_DIR)/%.o)
 DEPS := $(OBJS:.o=.d)
 
-.PHONY: all clean fclean re run
+.PHONY: all run clean fclean re
 
 all: $(LINK_NAME)
 
