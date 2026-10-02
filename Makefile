@@ -25,21 +25,21 @@ DEPS := $(OBJS:.o=.d)
 
 all: $(LINK_NAME)
 
-$(NAME): $(OBJS)
-	$(CC) $(LDFLAGS) $^ -o $@ $(LDLIBS)
-
 $(LINK_NAME): $(NAME)
 	ln -sf $< $@
+
+$(NAME): $(OBJS)
+	$(CC) $(LDFLAGS) $^ -o $@ $(LDLIBS)
 
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
 	@mkdir -p $(@D)
 	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
 
-$(EXEC): $(LINK_NAME) $(TEST_DIR)/main.c
-	$(CC) -I$(INC_DIR) $(CFLAGS) $(TEST_DIR)/main.c -o $@
-
 run: all $(EXEC)
 	LD_PRELOAD=./$(LINK_NAME) ./$(EXEC) $(ARG)
+
+$(EXEC): $(LINK_NAME) $(TEST_DIR)/main.c
+	$(CC) -I$(INC_DIR) $(CFLAGS) $(TEST_DIR)/main.c -o $@
 
 clean:
 	rm -rf $(BUILD_DIR)
